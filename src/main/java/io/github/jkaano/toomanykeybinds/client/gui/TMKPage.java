@@ -18,6 +18,7 @@ public class TMKPage {
         this.name = name;
         this.page_number = page_number;
         System.out.println("TMKPage generated: " + this.name);
+        System.out.println("Page Number: " + this.page_number);
     }
 
     public TMKPage(String name, int page_number, KeyMapping[] keys){
@@ -26,6 +27,7 @@ public class TMKPage {
         this.keys = keys;
         this.buttons = new ButtonIdentity[keys.length];
         System.out.println("TMKPage generated: " + this.name);
+        System.out.println("Page Number: " + this.page_number);
         initButtons();
         System.out.println("TMK Page: " + this.name + " has generated " + this.buttons.length + " button(s)");
     }

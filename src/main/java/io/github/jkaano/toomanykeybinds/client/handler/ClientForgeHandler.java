@@ -16,12 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = TooManyKeybinds.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeHandler {
 
-    private static boolean inKeyChange = false;
-    private static boolean oldValue = false;
     private static boolean update = false;
-
-    private static final Component KEYBIND_MENU = Component.translatable("controls.keybinds.title");
-    private static final Component CONTROLS_MENU = Component.translatable("controls.title");
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event){
@@ -52,11 +47,6 @@ public class ClientForgeHandler {
 
         }
 
-    }
-
-    private static void setValue(boolean value){
-        oldValue = inKeyChange;
-        inKeyChange = value;
     }
 
 }

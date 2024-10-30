@@ -1,7 +1,8 @@
 package io.github.jkaano.toomanykeybinds.client.screen;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
-import io.github.jkaano.toomanykeybinds.client.KeyHandler;
+import io.github.jkaano.toomanykeybinds.client.TMKConstants;
+import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
 import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
@@ -26,12 +27,9 @@ public class TMKScreen extends Screen {
     private int page;
     private int pageSelect;
 
-    private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
-    private final TMKPage[][] PAGE_SELECT = KEY_HANDLER.getPageSelect();
-
-    private final TMKPage[] TMK_PAGES = TooManyKeybinds.pages;
-
-    private EditBox search;
+    private final TMKPageHandler PAGE_HANDLER = TooManyKeybinds.pageHandler;
+    private final TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
+    private final TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
     public TMKScreen(){
         super(TITLE);
@@ -55,7 +53,7 @@ public class TMKScreen extends Screen {
         Level level = this.minecraft.level;
         if(level == null) return;
 
-        search = new EditBox(font, leftPos, topPos - 30, 200, 20, Component.literal("what"));
+        EditBox search = new EditBox(font, leftPos, topPos - 30, 200, 20, Component.literal("what"));
         addRenderableWidget(search);
         //Draw buttons belonging to a page
         int column = 0;
@@ -91,8 +89,9 @@ public class TMKScreen extends Screen {
 
         //Add page select buttons
         for(int i = 0; i < PAGE_SELECT[pageSelect].length; i++){
+            int PAGE_COUNT = TMKConstants.PAGE_COUNT;
             PageButtonIdentity selectPage = new PageButtonIdentity(
-                    PAGE_SELECT[pageSelect][i].getName(), i + (pageSelect*7),
+                    PAGE_SELECT[pageSelect][i].getName(), i + (pageSelect*PAGE_COUNT),
                     leftPos-91, topPos + 16 + (17*i),
                     90, 15, this);
             addRenderableWidget(selectPage.addButton());
