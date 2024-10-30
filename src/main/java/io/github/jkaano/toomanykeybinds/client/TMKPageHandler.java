@@ -104,6 +104,7 @@ public class TMKPageHandler {
                 pgi.add(new PageButtonIdentity(currentPage.getName(), currentPage.getPageNumber()));
             }
             buttons[i] = pgi.toArray(new PageButtonIdentity[0]);
+            pgi.clear();
         }
     }
 

@@ -153,7 +153,7 @@ public class TMKScreen extends Screen {
                 leftPos+imageWidth/2-3,
                 topPos+imageHeight-20, 0xFFFFFF);
         graphics.drawString(this.font, String.valueOf(TMK_PAGES.length),
-                leftPos + imageWidth/2 - (String.valueOf(page+1).length()*6)/2,
+                leftPos + imageWidth/2 - (String.valueOf(TMK_PAGES.length).length()*6)/2,
                 topPos + imageHeight - 15, 0xFFFFFF,
                 true);
 
