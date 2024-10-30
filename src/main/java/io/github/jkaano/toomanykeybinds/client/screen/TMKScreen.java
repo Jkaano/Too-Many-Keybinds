@@ -31,6 +31,14 @@ public class TMKScreen extends Screen {
     private final TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
     private final TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
+    private final PageButtonIdentity[][] pageButtonIdentities = PAGE_HANDLER.getButtons();
+
+    private EditBox search;
+    private boolean searching = false;
+    private String lookup = "";
+    private String suggestion = "Search Keybinds : Doesn't do anything right now";
+    private boolean focused = false;
+
     public TMKScreen(){
         super(TITLE);
     }
@@ -43,6 +51,8 @@ public class TMKScreen extends Screen {
         pageSelect = TooManyKeybinds.getPageSelect();
 
         ButtonIdentity[] pageButtons = TMK_PAGES[page].getButtons();
+        PageButtonIdentity[] pageSelectButton = pageButtonIdentities[pageSelect];
+
 
         PAGE_TITLE = Component.translatable(TMK_PAGES[page].getName());
 
@@ -53,8 +63,12 @@ public class TMKScreen extends Screen {
         Level level = this.minecraft.level;
         if(level == null) return;
 
-        EditBox search = new EditBox(font, leftPos, topPos - 30, 200, 20, Component.literal("what"));
+        search = new EditBox(font, leftPos, topPos - 20, imageWidth, 20, Component.literal("Search Keys"));
+        search.setSuggestion(suggestion);
+        search.setValue(lookup);
+        search.setFocused(focused);
         addRenderableWidget(search);
+
         //Draw buttons belonging to a page
         int column = 0;
         for(ButtonIdentity buttons: pageButtons){
@@ -88,26 +102,34 @@ public class TMKScreen extends Screen {
                         .build());
 
         //Add page select buttons
-        for(int i = 0; i < PAGE_SELECT[pageSelect].length; i++){
+        for(int i = 0; i < pageSelectButton.length; i++){
             int PAGE_COUNT = TMKConstants.PAGE_COUNT;
-            PageButtonIdentity selectPage = new PageButtonIdentity(
-                    PAGE_SELECT[pageSelect][i].getName(), i + (pageSelect*PAGE_COUNT),
-                    leftPos-91, topPos + 16 + (17*i),
-                    90, 15, this);
-            addRenderableWidget(selectPage.addButton());
+            if(i < PAGE_COUNT/2){
+                pageSelectButton[i].setRegion(
+                        leftPos-91,
+                        topPos + 16 + (17*i),
+                        90, 15, this);
+                addRenderableWidget(pageSelectButton[i].addButton());
+            }else{
+                pageSelectButton[i].setRegion(
+                        leftPos+imageWidth+1,
+                        topPos + 16 + (17*i) - (17*PAGE_COUNT/2),
+                        90, 15, this);
+                addRenderableWidget(pageSelectButton[i].addButton());
+            }
         }
 
         //Create next and previous buttons for page select
         addRenderableWidget(
                 Button.builder(Component.literal(">"), this::handleNextPageButton)
-                        .bounds(leftPos - 50, topPos + imageHeight - 23, 15, 15)
-                        .tooltip(Tooltip.create(Component.literal("Next Page")))
+                        .bounds(leftPos + imageWidth + 1, topPos + imageHeight - 23, 15, 15)
+                        .tooltip(Tooltip.create(Component.literal("Next Page Select")))
                         .build());
 
         addRenderableWidget(
                 Button.builder(Component.literal("<"), this::handleBackPageButton)
-                        .bounds(leftPos - 91, topPos + imageHeight - 23, 15, 15)
-                        .tooltip(Tooltip.create(Component.literal("Previous Page")))
+                        .bounds(leftPos - 16, topPos + imageHeight - 23, 15, 15)
+                        .tooltip(Tooltip.create(Component.literal("Previous Page Select")))
                         .build());
 
 
@@ -125,15 +147,60 @@ public class TMKScreen extends Screen {
                 true);
         graphics.drawString(this.font, String.valueOf(page+1),
                 leftPos + imageWidth/2 - (String.valueOf(page+1).length()*6)/2,
-                topPos + imageHeight - 20, 0xFFFFFF,
+                topPos + imageHeight - 25, 0xFFFFFF,
+                true);
+        graphics.drawString(this.font, "-",
+                leftPos+imageWidth/2-3,
+                topPos+imageHeight-20, 0xFFFFFF);
+        graphics.drawString(this.font, String.valueOf(TMK_PAGES.length),
+                leftPos + imageWidth/2 - (String.valueOf(page+1).length()*6)/2,
+                topPos + imageHeight - 15, 0xFFFFFF,
                 true);
 
+
+        //Check for searching
+        if(search.isFocused() && !searching){
+            searching = true;
+            focused = true;
+            System.out.println("Too Many Keybinds: Searching");
+            System.out.println("Searching value: " + search.getValue());
+            System.out.println("Lookup value: " + lookup);
+        }
+        if(search.isFocused() && searching && !search.getValue().isEmpty()){
+            if(!lookup.equals(search.getValue())){
+                lookup = search.getValue();
+                suggestion = "";
+                update();
+                System.out.println("Too Many Keybinds: Searching for: " + lookup);
+                System.out.println("Too Many Keybinds: Search reads: " + search.getValue());
+            }else if(!lookup.isEmpty() && search.getValue().isEmpty()){
+                lookup = search.getValue();
+                System.out.println("Too Many Keybinds: Lookup has value but search does not");
+            }
+        }
+        //It recognizes the search is empty but wont change to nothing
+        if(search.getValue().isEmpty() && searching){
+            //System.out.println("Search is empty");
+            if(!search.isFocused()){
+                searching = false;
+                focused = false;
+                search.setSuggestion("Search Keybinds");
+                lookup = "";
+                update();
+            }
+        }
+
+    }
+
+    public EditBox getSearch(){
+        return search;
     }
 
     //Clear widgets and reinitialize
     public void update(){
         this.clearWidgets();
         this.init();
+        System.out.println("Updating screen");
     }
 
     //Handle next and previous buttons
@@ -183,3 +250,4 @@ public class TMKScreen extends Screen {
     }
 
 }
+

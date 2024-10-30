@@ -3,7 +3,6 @@ package io.github.jkaano.toomanykeybinds.client.handler;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
-import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

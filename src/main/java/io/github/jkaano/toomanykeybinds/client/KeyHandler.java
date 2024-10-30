@@ -13,6 +13,9 @@ public class KeyHandler {
     private static KeyMapping[] KEYS;
     private static String[] categories;
 
+    private static KeyMapping[] searchableKeys;
+    private static String[] searchableCategories;
+
     public KeyHandler() {
         System.out.println("Too Many Keybinds: Key Handler created");
         TooManyKeybinds.pageHandler = new TMKPageHandler();

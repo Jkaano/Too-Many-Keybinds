@@ -58,7 +58,7 @@ public class TMKPage {
         return this.name;
     }
 
-    public int getPage_number() {
+    public int getPageNumber() {
         return page_number;
     }
 

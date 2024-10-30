@@ -63,7 +63,7 @@ public class ButtonIdentity{
             changeKey(tempSetter, unbound.getKey(), KeyModifier.NONE);
 
             //Some keys work with clicks, some work with hold, to make sure all keys activate both are included
-            setKey(key, 2, 10);
+            setKey(key, 2, 4);
             clickKeyDelay(key, 1);
 
         }

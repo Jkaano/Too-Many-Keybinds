@@ -1,20 +1,24 @@
 package io.github.jkaano.toomanykeybinds.client;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
+import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import net.minecraft.client.KeyMapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class TMKPageHandler {
 
     private static TMKPage[] pages;
     private static TMKPage[][] pageSelect;
 
+    private static TMKPage[][] searchablePages;
+
     private final int BUTTON_COUNT = TMKConstants.BUTTON_COUNT;
+
+    private static PageButtonIdentity[][] buttons;
 
     public TMKPageHandler(){
         System.out.println("Too Many Keybinds: Page Handler created");
@@ -25,7 +29,8 @@ public class TMKPageHandler {
         pages = createPages(keys);
         TooManyKeybinds.pages = pages;
         pageSelect = splitPages(pages);
-        System.out.println(Arrays.toString(pages));
+        buttons = new PageButtonIdentity[pageSelect.length][];
+        initButtons();
     }
 
     //Create page objects, add keys, and index
@@ -90,6 +95,18 @@ public class TMKPageHandler {
         return arrays;
     }
 
+    public void initButtons(){
+        List<PageButtonIdentity> pgi = new ArrayList<>();
+
+        for(int i = 0; i < pageSelect.length; i++){
+            for(int k = 0; k < pageSelect[i].length; k++){
+                TMKPage currentPage = pageSelect[i][k];
+                pgi.add(new PageButtonIdentity(currentPage.getName(), currentPage.getPageNumber()));
+            }
+            buttons[i] = pgi.toArray(new PageButtonIdentity[0]);
+        }
+    }
+
     //Getters
     public TMKPage[] getPages(){
         return  pages;
@@ -97,6 +114,10 @@ public class TMKPageHandler {
 
     public TMKPage[][] getPageSelect(){
         return pageSelect;
+    }
+
+    public PageButtonIdentity[][] getButtons(){
+        return buttons;
     }
 
 }
