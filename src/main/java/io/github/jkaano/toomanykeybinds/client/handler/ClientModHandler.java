@@ -2,7 +2,8 @@ package io.github.jkaano.toomanykeybinds.client.handler;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
-import io.github.jkaano.toomanykeybinds.client.KeybindingsReader;
+import io.github.jkaano.toomanykeybinds.client.KeyHandler;
+import io.github.jkaano.toomanykeybinds.client.gui.TMKPageHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +17,7 @@ public class ClientModHandler {
     public static void clientSetup(FMLClientSetupEvent event){
 
         System.out.println("Too Many Keybinds: Creating keybind list");
-        TooManyKeybinds.tmkHandler = new KeybindingsReader();
+        TooManyKeybinds.tmkHandler = new KeyHandler();
         System.out.println("Too Many Keybinds: Successfully created keybind list");
 
     }

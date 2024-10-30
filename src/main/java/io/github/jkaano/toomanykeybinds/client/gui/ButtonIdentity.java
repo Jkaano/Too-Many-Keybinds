@@ -1,4 +1,4 @@
-package io.github.jkaano.toomanykeybinds.client.screen;
+package io.github.jkaano.toomanykeybinds.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.client.settings.KeyModifier;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,16 +20,24 @@ public class ButtonIdentity{
 
     private final Component name;
     private final KeyMapping key;
-    private final int leftPos, topPos, width, height;
+    private final KeyModifier modifier;
+    private int leftPos, topPos, width, height;
 
     private final KeyMapping keySetter = Keybindings.INSTANCE.keySetter;
     private final KeyMapping unbound = Keybindings.INSTANCE.unbound;
 
+    private InputConstants.Key tempKey;
+    private InputConstants.Key tempSetter;
+
     private final Timer timer = new Timer();
 
-    public ButtonIdentity(KeyMapping key, int leftPos, int topPos, int width, int height){
+    public ButtonIdentity(KeyMapping key){
         this.key = key;
         this.name = Component.translatable(key.getName());
+        this.modifier = key.getKeyModifier();
+    }
+
+    public void setRegion(int leftPos, int topPos, int width, int height){
         this.leftPos = leftPos;
         this.topPos = topPos;
         this.width = width;
@@ -48,36 +57,38 @@ public class ButtonIdentity{
             minecraft.player.closeContainer(); // Close GUI
 
             //Setting the keys to a specific bind and then unbinding allows for all keys to work, even unbound
-            InputConstants.Key tempKey = key.getKey();
-            InputConstants.Key tempSetter = keySetter.getKey();
+            tempKey = key.getKey();
+            tempSetter = keySetter.getKey();
 
-            key.setKey(keySetter.getKey());
-            keySetter.setKey(unbound.getDefaultKey());
-            KeyMapping.resetMapping();
+            changeKey(tempSetter, unbound.getKey(), KeyModifier.NONE);
 
             //Some keys work with clicks, some work with hold, to make sure all keys activate both are included
-            clickKeyDelay(key, 1);
             setKey(key, 2, 10);
-
-            key.setKey(tempKey);
-            keySetter.setKey(tempSetter);
-            KeyMapping.resetMapping();
+            clickKeyDelay(key, 1);
 
         }
+    }
+
+    private void changeKey(InputConstants.Key toKey, InputConstants.Key toSetter, KeyModifier mod){
+        key.setKeyModifierAndCode(mod, toKey);
+        keySetter.setKey(toSetter);
+        KeyMapping.resetMapping();
+        KeyMapping.resetToggleKeys();
     }
 
     private void setKey(KeyMapping key, int tickDelay, int tickLength){
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                KeyMapping.set(key.getKey(), true);
+                key.setDown(true);
             }
         }, 50L * tickDelay);
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                KeyMapping.set(key.getKey(), false);
+                key.setDown(false);
+                changeKey(tempKey, tempSetter, modifier);
             }
         }, (50L * tickLength) + (50L * tickDelay)); //timers run at the same time so the delay has to be added to the second timer
     }
