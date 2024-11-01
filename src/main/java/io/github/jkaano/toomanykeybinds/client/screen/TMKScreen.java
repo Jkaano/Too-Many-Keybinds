@@ -1,6 +1,7 @@
 package io.github.jkaano.toomanykeybinds.client.screen;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
+import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.TMKConstants;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
 import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
@@ -28,16 +29,16 @@ public class TMKScreen extends Screen {
     private int pageSelect;
 
     private final TMKPageHandler PAGE_HANDLER = TooManyKeybinds.pageHandler;
-    private final TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
-    private final TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
+    private TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
+    private TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
     private final PageButtonIdentity[][] pageButtonIdentities = PAGE_HANDLER.getButtons();
 
+    private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
+
     private EditBox search;
-    private boolean searching = false;
+    private boolean searching = TooManyKeybinds.searching;
     private String lookup = "";
-    private String suggestion = "Search Keybinds : Doesn't do anything right now";
-    private boolean focused = false;
 
     public TMKScreen(){
         super(TITLE);
@@ -47,12 +48,19 @@ public class TMKScreen extends Screen {
     protected void init(){
         super.init();
 
+        if(!searching){
+            TMK_PAGES = PAGE_HANDLER.getPages();
+            PAGE_SELECT = PAGE_HANDLER.getPageSelect();
+        }else{
+            TMK_PAGES = PAGE_HANDLER.getSearchablePages();
+            PAGE_SELECT = PAGE_HANDLER.getSearchablePageSelect();
+        }
+
         page = TooManyKeybinds.getPage();
         pageSelect = TooManyKeybinds.getPageSelect();
 
         ButtonIdentity[] pageButtons = TMK_PAGES[page].getButtons();
         PageButtonIdentity[] pageSelectButton = pageButtonIdentities[pageSelect];
-
 
         PAGE_TITLE = Component.translatable(TMK_PAGES[page].getName());
 
@@ -63,10 +71,8 @@ public class TMKScreen extends Screen {
         Level level = this.minecraft.level;
         if(level == null) return;
 
-        search = new EditBox(font, leftPos, topPos - 20, imageWidth, 20, Component.literal("Search Keys"));
-        search.setSuggestion(suggestion);
-        search.setValue(lookup);
-        search.setFocused(focused);
+        search = new EditBox(font, leftPos, topPos - 20, imageWidth - 50, 20,
+                search, Component.literal("Search Keybind"));
         addRenderableWidget(search);
 
         //Draw buttons belonging to a page
@@ -132,6 +138,12 @@ public class TMKScreen extends Screen {
                         .tooltip(Tooltip.create(Component.literal("Previous Page Select")))
                         .build());
 
+        addRenderableWidget(
+                Button.builder(Component.literal("Search"), this::handleSearchButton)
+                        .bounds(leftPos + imageWidth - 50, topPos - 20, 50, 20)
+                        .tooltip(Tooltip.create(Component.literal("Search")))
+                        .build());
+
 
     }
 
@@ -157,43 +169,15 @@ public class TMKScreen extends Screen {
                 topPos + imageHeight - 15, 0xFFFFFF,
                 true);
 
-
-        //Check for searching
-        if(search.isFocused() && !searching){
-            searching = true;
-            focused = true;
-            System.out.println("Too Many Keybinds: Searching");
-            System.out.println("Searching value: " + search.getValue());
-            System.out.println("Lookup value: " + lookup);
-        }
-        if(search.isFocused() && searching && !search.getValue().isEmpty()){
-            if(!lookup.equals(search.getValue())){
-                lookup = search.getValue();
-                suggestion = "";
-                update();
-                System.out.println("Too Many Keybinds: Searching for: " + lookup);
-                System.out.println("Too Many Keybinds: Search reads: " + search.getValue());
-            }else if(!lookup.isEmpty() && search.getValue().isEmpty()){
-                lookup = search.getValue();
-                System.out.println("Too Many Keybinds: Lookup has value but search does not");
-            }
-        }
-        //It recognizes the search is empty but wont change to nothing
-        if(search.getValue().isEmpty() && searching){
-            //System.out.println("Search is empty");
-            if(!search.isFocused()){
-                searching = false;
-                focused = false;
-                search.setSuggestion("Search Keybinds");
-                lookup = "";
-                update();
-            }
-        }
-
     }
 
-    public EditBox getSearch(){
-        return search;
+    @Override
+    public void tick(){
+        search.tick();
+        if(!search.getValue().equals(lookup)){
+            lookup = search.getValue();
+            searching = !lookup.isEmpty();
+        }
     }
 
     //Clear widgets and reinitialize
@@ -242,6 +226,14 @@ public class TMKScreen extends Screen {
             TooManyKeybinds.setPageSelect(PAGE_SELECT.length - 1);
             update();
         }
+    }
+
+    private void handleSearchButton(Button button){
+        TooManyKeybinds.searching = searching;
+        TooManyKeybinds.setPage(0);
+        TooManyKeybinds.setPageSelect(0);
+        KEY_HANDLER.updateSearchable(lookup, this);
+        System.out.println("Updating search value to: " + lookup);
     }
 
     @Override

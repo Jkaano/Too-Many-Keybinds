@@ -6,9 +6,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.settings.KeyModifier;
 
+import javax.swing.text.JTextComponent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,11 +63,18 @@ public class ButtonIdentity{
             tempKey = key.getKey();
             tempSetter = keySetter.getKey();
 
+            minecraft.player.displayClientMessage(Component.literal(key.getCategory()), false);
+            minecraft.player.displayClientMessage(Component.literal(key.getName()), false);
+            minecraft.player.displayClientMessage(Component.literal(key.getKeyModifier().name()), false);
+            minecraft.player.displayClientMessage(Component.literal(key.getKeyConflictContext().toString()), false);
+            minecraft.player.displayClientMessage(Component.literal(key.getKey().getType().name()), false);
+            minecraft.player.displayClientMessage(Component.literal("----------"), false);
+
             changeKey(tempSetter, unbound.getKey(), KeyModifier.NONE);
 
             //Some keys work with clicks, some work with hold, to make sure all keys activate both are included
-            setKey(key, 2, 4);
-            clickKeyDelay(key, 1);
+            setKey(key, 5, 4);
+            clickKeyDelay(key, 5);
 
         }
     }

@@ -15,7 +15,7 @@ public class TooManyKeybinds {
     public static KeyHandler tmkHandler;
     public static TMKPageHandler pageHandler;
 
-    public static TMKPage[] pages;
+    public static boolean searching = false;
 
     public static void setPage(int page) {
         TooManyKeybinds.page = page;

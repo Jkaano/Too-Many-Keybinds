@@ -5,6 +5,7 @@ import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
+import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -27,7 +28,6 @@ public class ClientForgeHandler {
 
     @SubscribeEvent
     public static void guiOpen(ScreenEvent.Opening event){
-
         if(event.getScreen() instanceof KeyBindsScreen){
             update = true;
         }
@@ -37,7 +37,6 @@ public class ClientForgeHandler {
     public static void guiClose(ScreenEvent.Closing event){
 
         if(event.getScreen() instanceof KeyBindsScreen && update){
-
             System.out.println("Too Many Keybinds: Updating keybind list");
             TooManyKeybinds.tmkHandler.update();
             System.out.println("Too Many Keybinds: Done updating keybind list");

@@ -1,8 +1,8 @@
 package io.github.jkaano.toomanykeybinds.client;
 
-import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
+import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
 
 import java.util.ArrayList;
@@ -14,11 +14,13 @@ public class TMKPageHandler {
     private static TMKPage[] pages;
     private static TMKPage[][] pageSelect;
 
-    private static TMKPage[][] searchablePages;
+    private static TMKPage[] searchablePages;
+    private static TMKPage[][] searchablePageSelect;
 
     private final int BUTTON_COUNT = TMKConstants.BUTTON_COUNT;
 
     private static PageButtonIdentity[][] buttons;
+    private static PageButtonIdentity[][] searchableButtons;
 
     public TMKPageHandler(){
         System.out.println("Too Many Keybinds: Page Handler created");
@@ -27,10 +29,16 @@ public class TMKPageHandler {
     public void update(KeyMapping[][] keys){
         System.out.println("Too Many Keybinds: Updating pages");
         pages = createPages(keys);
-        TooManyKeybinds.pages = pages;
         pageSelect = splitPages(pages);
-        buttons = new PageButtonIdentity[pageSelect.length][];
-        initButtons();
+        buttons = initButtons(pageSelect);
+    }
+
+    public void updateSearchables(KeyMapping[][] keys, TMKScreen screen){
+        System.out.println("Too Many Keybinds: Updating searchable pages");
+        searchablePages = createPages(keys);
+        searchablePageSelect = splitPages(searchablePages);
+        searchableButtons = initButtons(searchablePageSelect);
+        screen.update();
     }
 
     //Create page objects, add keys, and index
@@ -95,17 +103,18 @@ public class TMKPageHandler {
         return arrays;
     }
 
-    public void initButtons(){
+    public PageButtonIdentity[][] initButtons(TMKPage[][] pages){
         List<PageButtonIdentity> pgi = new ArrayList<>();
+        PageButtonIdentity[][] tempPgi = new PageButtonIdentity[pages.length][];
 
-        for(int i = 0; i < pageSelect.length; i++){
-            for(int k = 0; k < pageSelect[i].length; k++){
-                TMKPage currentPage = pageSelect[i][k];
+        for(int i = 0; i < pages.length; i++){
+            for(int k = 0; k < pages[i].length; k++){
+                TMKPage currentPage = pages[i][k];
                 pgi.add(new PageButtonIdentity(currentPage.getName(), currentPage.getPageNumber()));
             }
-            buttons[i] = pgi.toArray(new PageButtonIdentity[0]);
-            pgi.clear();
+            tempPgi[i] = pgi.toArray(new PageButtonIdentity[0]);
         }
+        return tempPgi;
     }
 
     //Getters
@@ -117,8 +126,20 @@ public class TMKPageHandler {
         return pageSelect;
     }
 
+    public TMKPage[] getSearchablePages(){
+        return searchablePages;
+    }
+
+    public TMKPage[][] getSearchablePageSelect(){
+        return searchablePageSelect;
+    }
+
     public PageButtonIdentity[][] getButtons(){
         return buttons;
+    }
+
+    public PageButtonIdentity[][] getSearchableButtons(){
+        return searchableButtons;
     }
 
 }
