@@ -113,6 +113,7 @@ public class TMKPageHandler {
                 pgi.add(new PageButtonIdentity(currentPage.getName(), currentPage.getPageNumber()));
             }
             tempPgi[i] = pgi.toArray(new PageButtonIdentity[0]);
+            pgi.clear();
         }
         return tempPgi;
     }

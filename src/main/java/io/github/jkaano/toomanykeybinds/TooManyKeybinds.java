@@ -3,6 +3,7 @@ package io.github.jkaano.toomanykeybinds;
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
+import io.github.jkaano.toomanykeybinds.client.handler.RobotHandler;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(TooManyKeybinds.MODID)

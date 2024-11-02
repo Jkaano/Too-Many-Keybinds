@@ -32,8 +32,6 @@ public class TMKScreen extends Screen {
     private TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
     private TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
-    private final PageButtonIdentity[][] pageButtonIdentities = PAGE_HANDLER.getButtons();
-
     private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
 
     private EditBox search;
@@ -48,12 +46,15 @@ public class TMKScreen extends Screen {
     protected void init(){
         super.init();
 
+        PageButtonIdentity[][] pageButtonIdentities;
         if(!searching){
             TMK_PAGES = PAGE_HANDLER.getPages();
             PAGE_SELECT = PAGE_HANDLER.getPageSelect();
+            pageButtonIdentities = PAGE_HANDLER.getButtons();
         }else{
             TMK_PAGES = PAGE_HANDLER.getSearchablePages();
             PAGE_SELECT = PAGE_HANDLER.getSearchablePageSelect();
+            pageButtonIdentities = PAGE_HANDLER.getSearchableButtons();
         }
 
         page = TooManyKeybinds.getPage();
