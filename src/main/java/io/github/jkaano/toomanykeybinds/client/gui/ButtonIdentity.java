@@ -70,7 +70,6 @@ public class ButtonIdentity{
     private void changeKey(InputConstants.Key toKey, KeyModifier mod){
         key.setKeyModifierAndCode(mod, toKey);
         KeyMapping.resetMapping();
-        KeyMapping.resetToggleKeys();
     }
 
     private void pressKey(KeyMapping key, int tickDelay, int tickLength){
@@ -94,7 +93,6 @@ public class ButtonIdentity{
                     RobotHandler.simulateKeyRelease(key);
                 }else{
                     key.setDown(false);
-                    KeyMapping.releaseAll();
                 }
                 changeKey(tempKey, modifier);
             }
