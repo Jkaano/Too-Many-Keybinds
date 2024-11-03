@@ -21,6 +21,7 @@ public class TMKScreen extends Screen {
     private Component PAGE_TITLE;
 
     private final ResourceLocation TEXTURE = new ResourceLocation(TooManyKeybinds.MODID, "textures/gui/tmk_primary_screen.png");
+    private final ResourceLocation TEXTURE1 = new ResourceLocation(TooManyKeybinds.MODID, "textures/gui/tmk_screen.png");
 
     private final int imageWidth = 225, imageHeight = 140;
     private int leftPos, topPos;
@@ -72,7 +73,7 @@ public class TMKScreen extends Screen {
         Level level = this.minecraft.level;
         if(level == null) return;
 
-        search = new EditBox(font, leftPos, topPos - 20, imageWidth - 50, 20,
+        search = new EditBox(font, leftPos+1, topPos - 21, imageWidth - 52, 19,
                 search, Component.literal("Search Keybind"));
         addRenderableWidget(search);
 
@@ -141,7 +142,7 @@ public class TMKScreen extends Screen {
 
         addRenderableWidget(
                 Button.builder(Component.literal("Search"), this::handleSearchButton)
-                        .bounds(leftPos + imageWidth - 50, topPos - 20, 50, 20)
+                        .bounds(leftPos + imageWidth - 49, topPos - 21, 50, 20)
                         .tooltip(Tooltip.create(Component.literal("Search")))
                         .build());
 
@@ -152,6 +153,8 @@ public class TMKScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks){
         renderBackground(graphics);
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        graphics.blit(TEXTURE1, leftPos-97, topPos+5, 0, 0, 97, 130);
+        graphics.blit(TEXTURE1, leftPos+imageWidth, topPos+5, 97, 0, 97, 130);
         super.render(graphics, mouseX, mouseY, partialTicks);
 
         graphics.drawString(this.font, PAGE_TITLE,
