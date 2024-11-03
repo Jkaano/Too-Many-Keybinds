@@ -1,5 +1,6 @@
 package io.github.jkaano.toomanykeybinds.client.handler;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
@@ -15,19 +16,33 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientForgeHandler {
 
     private static boolean update = false;
+    private static boolean open = false;
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event){
         Minecraft minecraft = Minecraft.getInstance();
-        if(Keybindings.INSTANCE.openTMK.consumeClick() && minecraft.player != null){
+        if(Keybindings.INSTANCE.openTMK.consumeClick() && minecraft.player != null && !open){
             minecraft.setScreen(new TMKScreen());
         }
     }
+//Problem with container opening right after closing
+//    @SubscribeEvent
+//    public static void guiKeypress(ScreenEvent.KeyPressed event){
+//        Minecraft minecraft = Minecraft.getInstance();
+//        int key = Keybindings.INSTANCE.openTMK.getKey().getValue();
+//        if(Keybindings.INSTANCE.openTMK.isActiveAndMatches(InputConstants.getKey(key, key)) && event.getScreen() instanceof TMKScreen && minecraft.player != null && open){
+//            minecraft.player.closeContainer();
+//            open = false;
+//        }
+//    }
 
     @SubscribeEvent
     public static void guiOpen(ScreenEvent.Opening event){
         if(event.getScreen() instanceof KeyBindsScreen){
             update = true;
+        }
+        if(event.getScreen() instanceof TMKScreen){
+            open = true;
         }
     }
 
@@ -41,6 +56,9 @@ public class ClientForgeHandler {
 
             update = false;
 
+        }
+        if(event.getScreen() instanceof TMKScreen && open){
+            open = false;
         }
 
     }
