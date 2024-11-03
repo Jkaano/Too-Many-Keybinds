@@ -1,9 +1,12 @@
 package io.github.jkaano.toomanykeybinds.client;
 
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public class TMKPageHandler {
         pages = createPages(keys);
         pageSelect = splitPages(pages);
         buttons = initButtons(pageSelect);
+        //createConfig();
     }
 
     public void updateSearchables(KeyMapping[][] keys, TMKScreen screen){
@@ -39,6 +43,10 @@ public class TMKPageHandler {
         searchablePageSelect = splitPages(searchablePages);
         searchableButtons = initButtons(searchablePageSelect);
         screen.update();
+    }
+
+    public void createConfig(){
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC, "toomanykeybinds.toml");
     }
 
     //Create page objects, add keys, and index
