@@ -1,5 +1,6 @@
 package io.github.jkaano.toomanykeybinds.client.gui;
 
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import net.minecraft.client.KeyMapping;
 
 import java.util.ArrayList;
