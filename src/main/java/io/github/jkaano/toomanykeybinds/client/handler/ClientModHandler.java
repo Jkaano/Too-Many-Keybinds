@@ -25,6 +25,11 @@ public class ClientModHandler {
 
     }
 
+//    @SubscribeEvent
+//    public static void modConfig(ModConfigEvent event){
+//
+//    }
+
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event){
         event.register(Keybindings.INSTANCE.openTMK);
