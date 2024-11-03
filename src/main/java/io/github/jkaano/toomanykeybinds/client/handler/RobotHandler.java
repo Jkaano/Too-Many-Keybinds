@@ -35,13 +35,11 @@ public class RobotHandler {
     }
 
     public static void simulateKeyPress(KeyMapping keyMapping){
-        System.out.println("RobotHandler: Pressing key");
         robot.keyPress(keyMapping.getKey().getValue());
 
     }
 
     public static void simulateKeyRelease(KeyMapping keyMapping){
-        System.out.println("RobotHandler: Releasing key");
         robot.keyRelease(keyMapping.getKey().getValue());
     }
 
