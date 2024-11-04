@@ -2,11 +2,18 @@ package io.github.jkaano.toomanykeybinds;
 
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 
 @Mod(TooManyKeybinds.MODID)
 public class TooManyKeybinds {
     public static final String MODID = "toomanykeybinds";
+
+    public TooManyKeybinds(){
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+    }
 
     private static int page = 0;
     private static int pageSelect = 0;
