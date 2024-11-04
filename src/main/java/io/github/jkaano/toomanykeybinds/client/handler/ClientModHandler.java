@@ -7,7 +7,6 @@ import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibi
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -21,14 +20,9 @@ public class ClientModHandler {
         TooManyKeybinds.tmkHandler = new KeyHandler();
         System.out.println("Too Many Keybinds: Successfully created keybind list");
 
-        EssentialsCompatibility.essentials = ModList.get().isLoaded("essential");
+        EssentialsCompatibility.setEssentials();
 
     }
-
-//    @SubscribeEvent
-//    public static void modConfig(ModConfigEvent event){
-//
-//    }
 
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event){
