@@ -16,6 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public class TMKScreen extends Screen {
     private static final Component TITLE = Component.translatable("gui." + TooManyKeybinds.MODID + ".tmk_primary_screen");
     private Component PAGE_TITLE;
@@ -30,8 +32,9 @@ public class TMKScreen extends Screen {
     private int pageSelect;
 
     private final TMKPageHandler PAGE_HANDLER = TooManyKeybinds.pageHandler;
-    private TMKPage[] TMK_PAGES = PAGE_HANDLER.getPages();
-    private TMKPage[][] PAGE_SELECT = PAGE_HANDLER.getPageSelect();
+
+    private List<TMKPage> TMK_PAGES = PAGE_HANDLER.getPages();
+    private List<List<TMKPage>> PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
     private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
 
@@ -47,27 +50,26 @@ public class TMKScreen extends Screen {
     protected void init(){
         super.init();
 
-        PageButtonIdentity[][] pageButtonIdentities;
+        leftPos = (width - imageWidth) / 2;
+        topPos = (height - imageHeight) / 2;
+
+        page = TooManyKeybinds.getPage();
+        pageSelect = TooManyKeybinds.getPageSelect();
+
+        List<List<PageButtonIdentity>> pageButtonIdentities;
+
         if(!searching){
             TMK_PAGES = PAGE_HANDLER.getPages();
             PAGE_SELECT = PAGE_HANDLER.getPageSelect();
-            pageButtonIdentities = PAGE_HANDLER.getButtons();
+            pageButtonIdentities = PAGE_HANDLER.getPageButtons();
         }else{
             TMK_PAGES = PAGE_HANDLER.getSearchablePages();
             PAGE_SELECT = PAGE_HANDLER.getSearchablePageSelect();
             pageButtonIdentities = PAGE_HANDLER.getSearchableButtons();
         }
-
-        page = TooManyKeybinds.getPage();
-        pageSelect = TooManyKeybinds.getPageSelect();
-
-        ButtonIdentity[] pageButtons = TMK_PAGES[page].getButtons();
-        PageButtonIdentity[] pageSelectButton = pageButtonIdentities[pageSelect];
-
-        PAGE_TITLE = Component.translatable(TMK_PAGES[page].getName());
-
-        leftPos = (width - imageWidth) / 2;
-        topPos = (height - imageHeight) / 2;
+        PAGE_TITLE = Component.translatable(TMK_PAGES.get(page).getName());
+        List<ButtonIdentity> pageButtons = TMK_PAGES.get(page).getButtonIdentities();
+        List<PageButtonIdentity> pageSelectButton = pageButtonIdentities.get(pageSelect);
 
         if(this.minecraft == null) return;
         Level level = this.minecraft.level;
@@ -110,20 +112,20 @@ public class TMKScreen extends Screen {
                         .build());
 
         //Add page select buttons
-        for(int i = 0; i < pageSelectButton.length; i++){
+        for(int i = 0; i < pageSelectButton.size(); i++){
             int PAGE_COUNT = TMKConstants.PAGE_COUNT;
             if(i < PAGE_COUNT/2){
-                pageSelectButton[i].setRegion(
+                pageSelectButton.get(i).setRegion(
                         leftPos-91,
                         topPos + 16 + (17*i),
                         90, 15, this);
-                addRenderableWidget(pageSelectButton[i].addButton());
+                addRenderableWidget(pageSelectButton.get(i).addButton());
             }else{
-                pageSelectButton[i].setRegion(
+                pageSelectButton.get(i).setRegion(
                         leftPos+imageWidth+1,
                         topPos + 16 + (17*i) - (17*PAGE_COUNT/2),
                         90, 15, this);
-                addRenderableWidget(pageSelectButton[i].addButton());
+                addRenderableWidget(pageSelectButton.get(i).addButton());
             }
         }
 
@@ -168,8 +170,8 @@ public class TMKScreen extends Screen {
         graphics.drawString(this.font, "-",
                 leftPos+imageWidth/2-3,
                 topPos+imageHeight-20, 0xFFFFFF);
-        graphics.drawString(this.font, String.valueOf(TMK_PAGES.length),
-                leftPos + imageWidth/2 - (String.valueOf(TMK_PAGES.length).length()*6)/2,
+        graphics.drawString(this.font, String.valueOf(TMK_PAGES.size()),
+                leftPos + imageWidth/2 - (String.valueOf(TMK_PAGES.size()).length()*6)/2,
                 topPos + imageHeight - 15, 0xFFFFFF,
                 true);
 
@@ -193,10 +195,10 @@ public class TMKScreen extends Screen {
 
     //Handle next and previous buttons
     private void handleNextButton(Button button){
-        if(page < TMK_PAGES.length - 1){
+        if(page < TMK_PAGES.size() - 1){
             TooManyKeybinds.setPage(page+1);
             update();
-        }else if(page == TMK_PAGES.length-1){
+        }else if(page == TMK_PAGES.size()-1){
             TooManyKeybinds.setPage(0);
             update();
         }
@@ -206,17 +208,17 @@ public class TMKScreen extends Screen {
             TooManyKeybinds.setPage(page-1);
             update();
         }else if(page == 0){
-            TooManyKeybinds.setPage(TMK_PAGES.length - 1);
+            TooManyKeybinds.setPage(TMK_PAGES.size() - 1);
             update();
         }
     }
 
     //Handle next and previous page select buttons
     private void handleNextPageButton(Button button){
-        if(pageSelect < PAGE_SELECT.length - 1){
+        if(pageSelect < PAGE_SELECT.size() - 1){
             TooManyKeybinds.setPageSelect(pageSelect+1);
             update();
-        }else if(pageSelect == PAGE_SELECT.length - 1){
+        }else if(pageSelect == PAGE_SELECT.size() - 1){
             TooManyKeybinds.setPageSelect(0);
             update();
         }
@@ -227,7 +229,7 @@ public class TMKScreen extends Screen {
             TooManyKeybinds.setPageSelect(pageSelect - 1);
             update();
         }else if(pageSelect == 0){
-            TooManyKeybinds.setPageSelect(PAGE_SELECT.length - 1);
+            TooManyKeybinds.setPageSelect(PAGE_SELECT.size() - 1);
             update();
         }
     }
