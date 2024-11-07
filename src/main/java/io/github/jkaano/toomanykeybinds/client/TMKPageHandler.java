@@ -1,154 +1,88 @@
 package io.github.jkaano.toomanykeybinds.client;
 
-import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
+import com.google.common.collect.Lists;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static io.github.jkaano.toomanykeybinds.client.TMKConstants.*;
 
 public class TMKPageHandler {
 
-    private static TMKPage[] pages;
-    private static TMKPage[][] pageSelect;
+    private static List<TMKPage> pages;
+    private static List<List<TMKPage>> pageSelect;
+    private static List<List<PageButtonIdentity>> pageButtons;
 
-    private static TMKPage[] searchablePages;
-    private static TMKPage[][] searchablePageSelect;
-
-    private final int BUTTON_COUNT = TMKConstants.BUTTON_COUNT;
-
-    private static PageButtonIdentity[][] buttons;
-    private static PageButtonIdentity[][] searchableButtons;
+    private static List<TMKPage> searchablePages;
+    private static List<List<TMKPage>> searchablePageSelect;
+    private static List<List<PageButtonIdentity>> searchableButtons;
 
     public TMKPageHandler(){
-        System.out.println("Too Many Keybinds: Page Handler created");
+
     }
 
-    public void update(KeyMapping[][] keys){
-        System.out.println("Too Many Keybinds: Updating pages");
-        pages = createPages(keys);
-        pageSelect = splitPages(pages);
-        buttons = initButtons(pageSelect);
-        //createConfig();
+    public void update(Map<String, List<KeyMapping>> map, List<String> categories){
+        pages = createPages(map, categories); //Create pages
+        pageSelect = Lists.partition(pages, PAGE_COUNT); //Split pages into groups of 12
+        pageButtons = new ArrayList<>();
+        pageSelect.forEach(p1 -> {
+            List<PageButtonIdentity> pbi = new ArrayList<>();
+            pageSelect.get(pageSelect.indexOf(p1)).forEach(p2 -> {
+                pbi.add(new PageButtonIdentity(p2.getName(), p2.getPageNumber()));});
+            pageButtons.add(pbi);
+        }); //Initialize buttons
+
     }
 
-    public void updateSearchables(KeyMapping[][] keys, TMKScreen screen){
-        System.out.println("Too Many Keybinds: Updating searchable pages");
-        searchablePages = createPages(keys);
-        searchablePageSelect = splitPages(searchablePages);
-        searchableButtons = initButtons(searchablePageSelect);
+    public void updateSearchable(Map<String, List<KeyMapping>> map, List<String> categories, TMKScreen screen){
+
+        searchablePages = createPages(map, categories); //Create pages
+        searchablePageSelect = Lists.partition(searchablePages, PAGE_COUNT); //Split pages into groups of 12
+        searchableButtons = new ArrayList<>();
+        searchablePageSelect.forEach(p1 -> {
+            List<PageButtonIdentity> pbi = new ArrayList<>();
+            searchablePageSelect.get(searchablePageSelect.indexOf(p1)).forEach(p2 -> {
+                pbi.add(new PageButtonIdentity(p2.getName(), p2.getPageNumber()));});
+            searchableButtons.add(pbi);
+        }); //Initialize buttons
         screen.update();
     }
 
-    public void createConfig(){
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC, "toomanykeybinds.toml");
-    }
-
-    //Create page objects, add keys, and index
-    public TMKPage[] createPages(KeyMapping[][] modifiedKeys){
-
-        List<TMKPage> pages = new ArrayList<>();
-        KeyMapping[][] toSplit;
-
-
-        int index = 0;
-        for(KeyMapping[] keys : modifiedKeys){
-            if(keys.length > BUTTON_COUNT){
-                toSplit = splitKeys(keys);
-                for(KeyMapping[] split : toSplit){
-                    pages.add(new TMKPage(split[0].getCategory(), index, split));
-                    index++;
+    //Create and sort pages from Map by adding to List based on order of Categories
+    public List<TMKPage> createPages(Map<String, List<KeyMapping>> catKeys, List<String> cat){
+        List<TMKPage> t = new ArrayList<>();
+        int i = 0;
+        for(String c : cat){
+            if(catKeys.get(c).size() > BUTTON_COUNT){
+                List<List<KeyMapping>> partitions = Lists.partition(catKeys.get(c), BUTTON_COUNT);
+                for(List<KeyMapping> partition : partitions){
+                    t.add(new TMKPage(c, i++, partition));
                 }
-            }else{
-                pages.add(new TMKPage(keys[0].getCategory(), index, keys));
-                index++;
-            }
+            }else{t.add(new TMKPage(c, i++, catKeys.get(c)));}
         }
-        return pages.toArray(new TMKPage[0]);
-    }
-
-    //Code from GameDroids on stackoverflow - Splits KeyMapping[] into chunks of CHUNKSIZE
-    private KeyMapping[][] splitKeys(KeyMapping[] toSplit){
-        int remainder = toSplit.length % BUTTON_COUNT;
-        int chunks = toSplit.length / BUTTON_COUNT + (remainder > 0 ? 1 : 0);
-
-        KeyMapping[][] arrays = new KeyMapping[chunks][];
-
-        for(int i = 0; i < (remainder > 0 ? chunks - 1 : chunks); i++){
-            arrays[i] = Arrays.copyOfRange(toSplit,
-                    i*BUTTON_COUNT,
-                    i*BUTTON_COUNT+BUTTON_COUNT);
-        }if(remainder > 0){
-            arrays[chunks-1] = Arrays.copyOfRange(toSplit,
-                    (chunks - 1)*BUTTON_COUNT,
-                    (chunks-1)*BUTTON_COUNT+remainder);
-        }
-        return arrays;
-    }
-
-    //Code from GameDroids on stackoverflow - Splits KeyMapping[] into chunks of CHUNKSIZE
-    private TMKPage[][] splitPages(TMKPage[] toSplit){
-        int PAGE_COUNT = TMKConstants.PAGE_COUNT;
-        int remainder = toSplit.length % PAGE_COUNT;
-        int chunks = toSplit.length / PAGE_COUNT + (remainder > 0 ? 1 : 0);
-
-        TMKPage[][] arrays = new TMKPage[chunks][];
-
-        for(int i = 0; i < (remainder > 0 ? chunks - 1 : chunks); i++){
-            arrays[i] = Arrays.copyOfRange(toSplit,
-                    i* PAGE_COUNT,
-                    i* PAGE_COUNT + PAGE_COUNT);
-        }if(remainder > 0){
-            arrays[chunks-1] = Arrays.copyOfRange(toSplit,
-                    (chunks - 1)* PAGE_COUNT,
-                    (chunks-1)* PAGE_COUNT + remainder);
-        }
-        return arrays;
-    }
-
-    public PageButtonIdentity[][] initButtons(TMKPage[][] pages){
-        List<PageButtonIdentity> pgi = new ArrayList<>();
-        PageButtonIdentity[][] tempPgi = new PageButtonIdentity[pages.length][];
-
-        for(int i = 0; i < pages.length; i++){
-            for(int k = 0; k < pages[i].length; k++){
-                TMKPage currentPage = pages[i][k];
-                pgi.add(new PageButtonIdentity(currentPage.getName(), currentPage.getPageNumber()));
-            }
-            tempPgi[i] = pgi.toArray(new PageButtonIdentity[0]);
-            pgi.clear();
-        }
-        return tempPgi;
+        return t;
     }
 
     //Getters
-    public TMKPage[] getPages(){
-        return  pages;
+    public List<TMKPage> getPages(){
+        return pages;
     }
-
-    public TMKPage[][] getPageSelect(){
+    public List<List<TMKPage>> getPageSelect(){
         return pageSelect;
     }
-
-    public TMKPage[] getSearchablePages(){
+    public List<List<PageButtonIdentity>> getPageButtons(){
+        return pageButtons;
+    }
+    public List<TMKPage> getSearchablePages(){
         return searchablePages;
     }
-
-    public TMKPage[][] getSearchablePageSelect(){
+    public List<List<TMKPage>> getSearchablePageSelect(){
         return searchablePageSelect;
     }
-
-    public PageButtonIdentity[][] getButtons(){
-        return buttons;
-    }
-
-    public PageButtonIdentity[][] getSearchableButtons(){
+    public List<List<PageButtonIdentity>> getSearchableButtons(){
         return searchableButtons;
     }
-
 }

@@ -4,107 +4,39 @@ import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class KeyHandler {
 
-    private static KeyMapping[] KEYS;
-    private static String[] categories;
-    private static KeyMapping[][] preparedPages;
-
-    private static String[] searchableCategories;
+    private static List<KeyMapping> keys;
 
     public KeyHandler() {
-        System.out.println("Too Many Keybinds: Key Handler created");
         TooManyKeybinds.pageHandler = new TMKPageHandler();
-        KEYS = ArrayUtils.clone(Minecraft.getInstance().options.keyMappings);
-        System.out.println("Too Many Keybinds: Keys copied");
-        System.out.println("Too Many Keybinds: Creating categories");
-        categories = setCategories(KEYS);
-        System.out.println("Too Many Keybinds: Categories created");
-        System.out.println("Too Many Keybinds: Preparing pages");
-        preparedPages = preparePages(categories);
-        TooManyKeybinds.pageHandler.update(preparedPages);
-        System.out.println("Too Many Keybinds Pages prepared");
+        update();
     }
 
     public void update(){
-        System.out.println("Too Many Keybinds: Updating keys");
-        KEYS = ArrayUtils.clone(Minecraft.getInstance().options.keyMappings);
-        categories = setCategories(KEYS);
-        preparedPages = preparePages(categories);
-        TooManyKeybinds.pageHandler.update(preparedPages);
+        keys = Arrays.asList(Minecraft.getInstance().options.keyMappings); //Keys to list
+        List<String> categories = keys.stream().map(KeyMapping::getCategory).distinct().toList(); //Keys to category but distinct
+        Map<String, List<KeyMapping>> categorizedKeyMapping = keys.stream().collect(Collectors.groupingBy(KeyMapping::getCategory)); //Categorize keys by category
+        TooManyKeybinds.pageHandler.update(categorizedKeyMapping, categories);
     }
 
     public void updateSearchable(String lookup, TMKScreen screen){
-        System.out.println("Too Many Keybinds: Updating searchable keys");
-        setSearchableKeys(lookup);
-        if(searchableCategories.length != 0){
-            TooManyKeybinds.pageHandler.updateSearchables(preparePages(searchableCategories), screen);
-        }else{
-            System.out.println("No searchable keys");
+        List <KeyMapping> searchableKeys = new ArrayList<>();
+        keys.forEach(key -> {
+            if(Component.translatable(key.getName()).getString().toLowerCase().contains(lookup.toLowerCase())){
+                searchableKeys.add(key);
+            }});
+        List<String> searchableCategories = searchableKeys.stream().map(KeyMapping::getCategory).distinct().toList();
+        Map<String, List<KeyMapping>> categorizedSearchable = searchableKeys.stream().collect(Collectors.groupingBy(KeyMapping::getCategory));
+
+        if(!searchableCategories.isEmpty()){
+            TooManyKeybinds.pageHandler.updateSearchable(categorizedSearchable, searchableCategories, screen);
         }
 
     }
-
-    //Create a list of categories
-    private String[] setCategories(KeyMapping[] keys){
-        List<String> categories = new ArrayList<>();
-
-        for(KeyMapping key : keys){
-            if(!categories.contains(key.getCategory())) {
-                categories.add(key.getCategory());
-            }
-        }
-
-        return categories.toArray(new String[0]);
-    }
-
-    //Split keys into categories, then update pageHandler
-    private KeyMapping[][] preparePages(String[] categories){
-
-        List<KeyMapping> tempKey = new ArrayList<>();
-        KeyMapping[][] tempMapping = new KeyMapping[categories.length][];
-
-        for(int i = 0; i < categories.length; i++){
-            for(KeyMapping key : KEYS){
-                if(key.getCategory().equals(categories[i])){
-                    tempKey.add(key);
-                }
-            }
-
-            tempMapping[i] = tempKey.toArray(new KeyMapping[0]);
-            tempKey.clear();
-
-        }
-
-        return tempMapping;
-    }
-
-    public void setSearchableKeys(String search){
-
-        List<KeyMapping> searchable = new ArrayList<>();
-
-        for(KeyMapping key : KEYS){
-            String comp = Component.translatable(key.getName()).getString();
-            if(comp.toLowerCase().contains(search.toLowerCase())){
-                System.out.println(comp + " contains " + search);
-                searchable.add(key);
-            }
-        }
-
-        KeyMapping[] searchableKeys = searchable.toArray(new KeyMapping[0]);
-        searchableCategories = setCategories(searchableKeys);
-
-    }
-
-    public KeyMapping[] getKeys(){
-        return KEYS;
-    }
-
 }
