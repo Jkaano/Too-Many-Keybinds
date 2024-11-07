@@ -1,8 +1,10 @@
 package io.github.jkaano.toomanykeybinds.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.handler.RobotHandler;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -20,6 +22,9 @@ import java.util.TimerTask;
  */
 public class ButtonIdentity{
 
+    private static final String DISPLAY_MESSAGE = "message." + TooManyKeybinds.MODID + ".display_message";
+    private static final String TOO_LATE = "message." + TooManyKeybinds.MODID + ".too_late";
+
     private final Component name;
     private final KeyMapping key;
     private final KeyModifier modifier;
@@ -28,7 +33,6 @@ public class ButtonIdentity{
     private final KeyMapping keySetter = Keybindings.INSTANCE.keySetter;
 
     private InputConstants.Key tempKey;
-    private InputConstants.Key tempSetter;
 
     private final Timer timer = new Timer();
 
@@ -62,7 +66,14 @@ public class ButtonIdentity{
             changeKey(keySetter.getKey(), KeyModifier.NONE);
 
             //Press the key and release it. Uses a robot to press and then releases both the robot and game input
-            pressKey(key, 1, 2);
+            if(ClientConfig.AUTOMATIC_KEY_PRESS.get()){
+                pressKey(key);
+            }else if(!ClientConfig.AUTOMATIC_KEY_PRESS.get()){
+                keyDelay(key);
+            }else{
+                System.out.println("Too Many Keybinds: Hmm... why is the config not true or false, failed to press");
+            }
+
 
         }
     }
@@ -72,7 +83,7 @@ public class ButtonIdentity{
         KeyMapping.resetMapping();
     }
 
-    private void pressKey(KeyMapping key, int tickDelay, int tickLength){
+    private void pressKey(KeyMapping key){
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -83,7 +94,7 @@ public class ButtonIdentity{
                     KeyMapping.click(key.getKey());
                 }
             }
-        }, 50L * tickDelay);
+        }, 50L);
 
         timer.schedule(new TimerTask() {
             @Override
@@ -96,7 +107,25 @@ public class ButtonIdentity{
                 }
                 changeKey(tempKey, modifier);
             }
-        }, (50L * tickLength) + (50L * tickDelay)); //timers run at the same time so the delay has to be added to the second timer
+        }, (50L * 2) + (50L)); //timers run at the same time so the delay has to be added to the second timer
+    }
+
+    private void keyDelay(KeyMapping key){
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.player != null){
+            minecraft.player.displayClientMessage(Component.translatable(DISPLAY_MESSAGE), false);
+            minecraft.player.displayClientMessage(Component.translatable(key.getKey().toString()), false);
+        }
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(minecraft.player != null){
+                    minecraft.player.displayClientMessage(Component.translatable(TOO_LATE), false);
+                }
+                changeKey(tempKey, modifier);
+            }
+        }, 30000L); //30 second wait
+
     }
 
 }
