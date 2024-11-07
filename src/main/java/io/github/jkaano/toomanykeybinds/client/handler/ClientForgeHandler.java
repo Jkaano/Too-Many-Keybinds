@@ -1,6 +1,5 @@
 package io.github.jkaano.toomanykeybinds.client.handler;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
