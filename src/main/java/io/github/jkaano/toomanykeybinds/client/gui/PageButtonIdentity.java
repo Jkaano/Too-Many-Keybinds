@@ -4,7 +4,6 @@ import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 public class PageButtonIdentity {
