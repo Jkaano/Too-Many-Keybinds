@@ -4,5 +4,7 @@
   "key.toomanykeybinds.set_key": "TMK Set: Unique + No Modifiers",
   "gui.toomanykeybinds.tmk_primary_screen": "TMK Main Menu",
   "key.categories.toomanykeybinds": "Too Many Keybinds",
-  "message.toomanykeybinds.opentmk_key_pressed": "Open TMK Key Pressed"
+  "message.toomanykeybinds.opentmk_key_pressed": "Open TMK Key Pressed",
+  "message.toomanykeybinds.display_message": "Key bind set, to activate press:",
+  "message.toomanykeybinds.too_late": "You have taken too long, resetting keybind"
 }
