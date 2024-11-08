@@ -3,9 +3,13 @@ package io.github.jkaano.toomanykeybinds;
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
+import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mod(TooManyKeybinds.MODID)
 public class TooManyKeybinds {
@@ -22,6 +26,8 @@ public class TooManyKeybinds {
     public static TMKPageHandler pageHandler;
 
     public static boolean searching = false;
+
+    public static List<ButtonIdentity> keyQueue = new ArrayList<>();
 
     public static void setPage(int page) {
         TooManyKeybinds.page = page;
