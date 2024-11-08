@@ -2,6 +2,7 @@ package io.github.jkaano.toomanykeybinds.client.handler;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
@@ -23,7 +24,11 @@ public class ClientForgeHandler {
         if(Keybindings.INSTANCE.openTMK.consumeClick() && minecraft.player != null && !open){
             minecraft.setScreen(new TMKScreen());
         }
+        if(!ClientConfig.AUTOMATIC_KEY_PRESS.get() && Keybindings.INSTANCE.keySetter.consumeClick() && minecraft.player != null && !open && !TooManyKeybinds.keyQueue.isEmpty()){
+            TooManyKeybinds.keyQueue.get(0).removeFromQueue();
+        }
     }
+
 //Problem with container opening right after closing
 //    @SubscribeEvent
 //    public static void guiKeypress(ScreenEvent.KeyPressed event){
