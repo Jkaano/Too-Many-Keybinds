@@ -35,6 +35,7 @@ public class ButtonIdentity{
     private InputConstants.Key tempKey;
 
     private final Timer timer = new Timer();
+    private boolean inQueue = false;
 
     public ButtonIdentity(KeyMapping key){
         this.key = key;
@@ -112,20 +113,33 @@ public class ButtonIdentity{
 
     private void keyDelay(KeyMapping key){
         Minecraft minecraft = Minecraft.getInstance();
+        addToQueue();
         if(minecraft.player != null){
             minecraft.player.displayClientMessage(Component.translatable(DISPLAY_MESSAGE), false);
-            minecraft.player.displayClientMessage(Component.translatable(key.getKey().toString()), false);
+            minecraft.player.displayClientMessage(Component.translatable(key.getKey().getName()), false);
         }
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(minecraft.player != null){
+                if(minecraft.player != null && inQueue){
                     minecraft.player.displayClientMessage(Component.translatable(TOO_LATE), false);
+                    removeFromQueue();
                 }
-                changeKey(tempKey, modifier);
             }
-        }, 30000L); //30 second wait
+        }, 5000L); //5 second wait
 
+    }
+
+    public void addToQueue(){
+        inQueue = true;
+        TooManyKeybinds.keyQueue.add(this);
+    }
+
+    public void removeFromQueue(){
+        inQueue = false;
+        TooManyKeybinds.keyQueue.remove(this);
+        key.setDown(false);
+        changeKey(tempKey, modifier);
     }
 
 }
