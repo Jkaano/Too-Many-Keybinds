@@ -20,7 +20,6 @@ import java.util.List;
 
 public class TMKScreen extends Screen {
     private static final Component TITLE = Component.translatable("gui." + TooManyKeybinds.MODID + ".tmk_primary_screen");
-    private Component PAGE_TITLE;
 
     private final ResourceLocation TEXTURE = new ResourceLocation(TooManyKeybinds.MODID, "textures/gui/tmk_primary_screen.png");
     private final ResourceLocation TEXTURE1 = new ResourceLocation(TooManyKeybinds.MODID, "textures/gui/tmk_screen.png");
@@ -32,11 +31,16 @@ public class TMKScreen extends Screen {
     private int pageSelect;
 
     private final TMKPageHandler PAGE_HANDLER = TooManyKeybinds.pageHandler;
+    private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
 
     private List<TMKPage> TMK_PAGES = PAGE_HANDLER.getPages();
     private List<List<TMKPage>> PAGE_SELECT = PAGE_HANDLER.getPageSelect();
 
-    private final KeyHandler KEY_HANDLER = TooManyKeybinds.tmkHandler;
+    private List<List<PageButtonIdentity>> pageButtonIdentities = PAGE_HANDLER.getPageButtons();
+    private List<ButtonIdentity> pageButtons = TMK_PAGES.get(page).getButtonIdentities();
+    private List<PageButtonIdentity> pageSelectButton = pageButtonIdentities.get(pageSelect);
+
+    private Component PAGE_TITLE = Component.translatable(TMK_PAGES.get(page).getName());
 
     private EditBox search;
     private boolean searching = TooManyKeybinds.searching;
@@ -56,47 +60,18 @@ public class TMKScreen extends Screen {
         page = TooManyKeybinds.getPage();
         pageSelect = TooManyKeybinds.getPageSelect();
 
-        List<List<PageButtonIdentity>> pageButtonIdentities;
-
-        if(!searching){
-            TMK_PAGES = PAGE_HANDLER.getPages();
-            PAGE_SELECT = PAGE_HANDLER.getPageSelect();
-            pageButtonIdentities = PAGE_HANDLER.getPageButtons();
-        }else{
-            TMK_PAGES = PAGE_HANDLER.getSearchablePages();
-            PAGE_SELECT = PAGE_HANDLER.getSearchablePageSelect();
-            pageButtonIdentities = PAGE_HANDLER.getSearchableButtons();
-        }
-        PAGE_TITLE = Component.translatable(TMK_PAGES.get(page).getName());
-        List<ButtonIdentity> pageButtons = TMK_PAGES.get(page).getButtonIdentities();
-        List<PageButtonIdentity> pageSelectButton = pageButtonIdentities.get(pageSelect);
+        checkSearching();
 
         if(this.minecraft == null) return;
         Level level = this.minecraft.level;
         if(level == null) return;
 
+        //Draw buttons belonging to a page
+        drawButtons();
+
         search = new EditBox(font, leftPos+1, topPos - 21, imageWidth - 52, 19,
                 search, Component.literal("Search Keybind"));
         addRenderableWidget(search);
-
-        //Draw buttons belonging to a page
-        int column = 0;
-        for(ButtonIdentity buttons: pageButtons){
-            if(column < 5){
-                buttons.setRegion(
-                        leftPos + imageWidth/2 - 105,
-                        topPos + 16 + 20*column,
-                        100, 15);
-                addRenderableWidget(buttons.addButton());
-            }else{
-                buttons.setRegion(
-                        leftPos + imageWidth/2 + 5,
-                        topPos + 16 + 20*(column-5),
-                        100, 15);
-                addRenderableWidget(buttons.addButton());
-            }
-            column++;
-        }
 
         //Create next and previous buttons
         addRenderableWidget(
@@ -112,22 +87,7 @@ public class TMKScreen extends Screen {
                         .build());
 
         //Add page select buttons
-        for(int i = 0; i < pageSelectButton.size(); i++){
-            int PAGE_COUNT = TMKConstants.PAGE_COUNT;
-            if(i < PAGE_COUNT/2){
-                pageSelectButton.get(i).setRegion(
-                        leftPos-91,
-                        topPos + 16 + (17*i),
-                        90, 15, this);
-                addRenderableWidget(pageSelectButton.get(i).addButton());
-            }else{
-                pageSelectButton.get(i).setRegion(
-                        leftPos+imageWidth+1,
-                        topPos + 16 + (17*i) - (17*PAGE_COUNT/2),
-                        90, 15, this);
-                addRenderableWidget(pageSelectButton.get(i).addButton());
-            }
-        }
+        drawPageSelectButtons();
 
         //Create next and previous buttons for page select
         addRenderableWidget(
@@ -190,7 +150,60 @@ public class TMKScreen extends Screen {
     public void update(){
         this.clearWidgets();
         this.init();
-        System.out.println("Updating screen");
+    }
+
+    public void checkSearching(){
+        if(!searching){
+            TMK_PAGES = PAGE_HANDLER.getPages();
+            PAGE_SELECT = PAGE_HANDLER.getPageSelect();
+            pageButtonIdentities = PAGE_HANDLER.getPageButtons();
+        }else{
+            TMK_PAGES = PAGE_HANDLER.getSearchablePages();
+            PAGE_SELECT = PAGE_HANDLER.getSearchablePageSelect();
+            pageButtonIdentities = PAGE_HANDLER.getSearchableButtons();
+        }
+        PAGE_TITLE = Component.translatable(TMK_PAGES.get(page).getName());
+        pageButtons = TMK_PAGES.get(page).getButtonIdentities();
+        pageSelectButton = pageButtonIdentities.get(pageSelect);
+    }
+
+    public void drawButtons(){
+        int column = 0;
+        for(ButtonIdentity buttons: pageButtons){
+            if(column < 5){
+                buttons.setRegion(
+                        leftPos + imageWidth/2 - 105,
+                        topPos + 16 + 20*column,
+                        100, 15);
+                addRenderableWidget(buttons.addButton());
+            }else{
+                buttons.setRegion(
+                        leftPos + imageWidth/2 + 5,
+                        topPos + 16 + 20*(column-5),
+                        100, 15);
+                addRenderableWidget(buttons.addButton());
+            }
+            column++;
+        }
+    }
+
+    public void drawPageSelectButtons(){
+        for(int i = 0; i < pageSelectButton.size(); i++){
+            int PAGE_COUNT = TMKConstants.PAGE_COUNT;
+            if(i < PAGE_COUNT/2){
+                pageSelectButton.get(i).setRegion(
+                        leftPos-91,
+                        topPos + 16 + (17*i),
+                        90, 15, this);
+                addRenderableWidget(pageSelectButton.get(i).addButton());
+            }else{
+                pageSelectButton.get(i).setRegion(
+                        leftPos+imageWidth+1,
+                        topPos + 16 + (17*i) - (17*PAGE_COUNT/2),
+                        90, 15, this);
+                addRenderableWidget(pageSelectButton.get(i).addButton());
+            }
+        }
     }
 
     //Handle next and previous buttons
