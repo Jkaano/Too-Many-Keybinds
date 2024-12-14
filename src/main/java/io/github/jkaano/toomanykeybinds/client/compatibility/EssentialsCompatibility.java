@@ -12,7 +12,11 @@ public class EssentialsCompatibility {
     //public static boolean essentials = true;
 
     public static void setEssentials() {
-        essentials = ModList.get().isLoaded("essential");
+        //essentials = ModList.get().isLoaded("essential");
+        //Add True/False if essentials is installed/not installed to the robot compatibility list
+        TooManyKeybinds.getRobotCompatibilityChecker().addCompatible(
+                ModList.get().isLoaded("essential")
+        );
 
         //If essentials is installed, turn off auto key press, or if it is uninstalled turn it on
         //Only do this if the user hasn't manually changed the key bind
