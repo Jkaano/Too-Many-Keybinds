@@ -17,6 +17,8 @@ import java.util.List;
 public class TooManyKeybinds {
     public static final String MODID = "toomanykeybinds";
 
+    public static RobotCompatibilityChecker robotCompatibilityChecker;
+
     public TooManyKeybinds(){
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
     }
