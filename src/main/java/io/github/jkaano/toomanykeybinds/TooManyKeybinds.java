@@ -2,6 +2,8 @@ package io.github.jkaano.toomanykeybinds;
 
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
+import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
+import io.github.jkaano.toomanykeybinds.client.compatibility.RobotCompatibilityChecker;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
 import net.minecraftforge.fml.ModLoadingContext;
