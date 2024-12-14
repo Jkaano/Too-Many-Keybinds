@@ -16,6 +16,8 @@ public class ClientModHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event){
 
+        RobotHandler.setCompatConfig();
+
         System.out.println("Too Many Keybinds: Creating keybind list");
         TooManyKeybinds.tmkHandler = new KeyHandler();
         System.out.println("Too Many Keybinds: Successfully created keybind list");
