@@ -1,6 +1,6 @@
 package io.github.jkaano.toomanykeybinds.client.compatibility;
 
-import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
+import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import net.minecraftforge.fml.ModList;
 
 public class EssentialsCompatibility {
