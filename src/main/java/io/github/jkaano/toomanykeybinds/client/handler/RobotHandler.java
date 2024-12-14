@@ -43,7 +43,6 @@ public class RobotHandler {
 
     public static void simulateKeyPress(KeyMapping keyMapping){
         robot.keyPress(keyMapping.getKey().getValue());
-
     }
 
     public static void simulateKeyRelease(KeyMapping keyMapping){
