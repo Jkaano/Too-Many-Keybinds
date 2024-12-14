@@ -39,6 +39,9 @@ public class RobotHandler {
             System.out.println("Too Many Keybinds: Conflict Found, ignoring robot");
         }
 
+        //Reset the compatibility config AFTER checking if robot is in use.
+        setCompatConfig();
+
     }
 
     public static void simulateKeyPress(KeyMapping keyMapping){
