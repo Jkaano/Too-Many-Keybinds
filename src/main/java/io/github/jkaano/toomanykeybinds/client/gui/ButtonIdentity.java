@@ -89,7 +89,7 @@ public class ButtonIdentity{
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(!EssentialsCompatibility.essentials){
+                if(RobotHandler.usingRobot()){
                     RobotHandler.simulateKeyPress(key);
                 }else{
                     key.setDown(true);
