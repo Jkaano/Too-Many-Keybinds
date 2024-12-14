@@ -56,6 +56,27 @@ public class TMKPageHandler {
         screen.update();
     }
 
+    public void readConfig(){
+        String config = ClientConfig.PAGES.get();
+        List<String> configSplit;
+        List<List<String>> pageInfo = new ArrayList<>();
+        configSplit = Arrays.asList(config.split("Page"));
+
+        configSplit.forEach(page -> {
+            System.out.println("Too Many Keybinds: " + page);
+            List<String> info = new ArrayList<>();
+            info.add(StringUtils.substringBetween(page, "name=", ";"));
+            info.add(StringUtils.substringBetween(page, "keys=", ";"));
+            info.add(StringUtils.substringBetween(page, "page_number=", ";"));
+            info.add(StringUtils.substringBetween(page, "hidden=", "}"));
+            pageInfo.add(info);
+            System.out.println("Too Many Keybinds: " + pageInfo.get(configSplit.indexOf(page)));
+        });
+
+        pageInfo.remove(0);
+        System.out.println(pageInfo);
+    }
+
     //Create and sort pages from Map by adding to List based on order of Categories
     public List<TMKPage> createPages(Map<String, List<KeyMapping>> catKeys, List<String> cat){
         List<TMKPage> t = new ArrayList<>();
