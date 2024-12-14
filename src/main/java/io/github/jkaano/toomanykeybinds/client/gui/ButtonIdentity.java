@@ -82,6 +82,7 @@ public class ButtonIdentity{
     private void changeKey(InputConstants.Key toKey, KeyModifier mod){
         key.setKeyModifierAndCode(mod, toKey);
         KeyMapping.resetMapping();
+        KeyMapping.resetToggleKeys();
     }
 
     private void pressKey(KeyMapping key){
