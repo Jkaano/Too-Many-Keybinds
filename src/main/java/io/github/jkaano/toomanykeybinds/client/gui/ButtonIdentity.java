@@ -3,7 +3,6 @@ package io.github.jkaano.toomanykeybinds.client.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
-import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.handler.RobotHandler;
 import net.minecraft.client.KeyMapping;
