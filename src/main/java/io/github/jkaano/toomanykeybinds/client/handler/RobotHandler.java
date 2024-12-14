@@ -14,6 +14,8 @@ import java.awt.*;
 public class RobotHandler {
 
     private static Robot robot;
+    private static boolean useRobot;
+    private static RobotCompatibilityChecker robotCompatibilityChecker;
 
     @SubscribeEvent
     public static void loadRobot(FMLLoadCompleteEvent event){
