@@ -6,6 +6,7 @@ import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibi
 import io.github.jkaano.toomanykeybinds.client.compatibility.RobotCompatibilityChecker;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
+import io.github.jkaano.toomanykeybinds.client.handler.RobotHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -23,9 +24,6 @@ public class TooManyKeybinds {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         //Create compatibility checking object
         robotCompatibilityChecker = new RobotCompatibilityChecker();
-
-        //Set compatibilities
-        EssentialsCompatibility.setEssentials();
     }
 
     private static int page = 0;

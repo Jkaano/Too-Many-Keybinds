@@ -3,6 +3,7 @@ package io.github.jkaano.toomanykeybinds.client.handler;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
+import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,6 +15,9 @@ public class ClientModHandler {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event){
+
+        //Set compatibilities
+        EssentialsCompatibility.setEssentials();
 
         RobotHandler.setCompatConfig();
 
