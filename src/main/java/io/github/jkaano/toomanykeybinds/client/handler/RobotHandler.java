@@ -31,7 +31,6 @@ public class RobotHandler {
                 System.out.println("Assigning new robot");
                 robot = new Robot();
             } catch (AWTException e) {
-                //throw new RuntimeException("Too Many Keybinds: Robot does not work");
                 e.printStackTrace();
                 useRobot = false;
             }
