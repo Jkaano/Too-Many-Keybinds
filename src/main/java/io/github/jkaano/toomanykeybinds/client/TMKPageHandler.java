@@ -5,6 +5,7 @@ import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
