@@ -35,6 +35,11 @@ public class TMKPageHandler {
             pageButtons.add(pbi);
         }); //Initialize buttons
 
+        ClientConfig.PAGES.set(pageSelect.toString());
+        ClientConfig.PAGES.save();
+
+        readConfig();
+
     }
 
     public void updateSearchable(Map<String, List<KeyMapping>> map, List<String> categories, TMKScreen screen){
