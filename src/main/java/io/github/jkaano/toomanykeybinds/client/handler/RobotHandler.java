@@ -22,6 +22,7 @@ public class RobotHandler {
             System.setProperty("java.awt.headless", "false");
             System.out.println("Too Many Keybinds: headless: " + System.getProperty("java.awt.headless"));
 
+        if(useRobot) {
             try {
                 System.out.println("Too Many Keybinds: Essentials not found, Load Robot");
                 System.setProperty("java.awt.headless", "false");
