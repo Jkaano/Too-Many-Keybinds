@@ -19,6 +19,7 @@ public class ClientConfig {
 
         AUTOMATIC_KEY_PRESS = BUILDER.comment("Automatic Key Press").define("auto_key_press", true);
         LOCK_AUTO = BUILDER.define("lock_value_on_startup", false);
+        PAGES = BUILDER.comment("Pages").define("pages", "");
 
         BUILDER.pop();
         SPEC = BUILDER.build();
