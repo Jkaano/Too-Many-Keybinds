@@ -43,4 +43,22 @@ public class RobotHandler {
         robot.keyRelease(keyMapping.getKey().getValue());
     }
 
+    public static void setCompatConfig(){
+        if(!useRobot && !ClientConfig.LOCK_AUTO.get()){
+            ClientConfig.AUTOMATIC_KEY_PRESS.set(false);
+            ClientConfig.AUTOMATIC_KEY_PRESS.save();
+        }else if(!ClientConfig.LOCK_AUTO.get()){
+            ClientConfig.AUTOMATIC_KEY_PRESS.set(true);
+            ClientConfig.AUTOMATIC_KEY_PRESS.save();
+        }
+    }
+
+    public static void checkCompatibility(){
+        useRobot = robotCompatibilityChecker.checkRobotCompatibility();
+    }
+
+    public static boolean usingRobot(){
+        return useRobot;
+    }
+
 }
