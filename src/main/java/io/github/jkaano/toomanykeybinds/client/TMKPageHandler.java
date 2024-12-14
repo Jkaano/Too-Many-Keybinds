@@ -58,6 +58,7 @@ public class TMKPageHandler {
         screen.update();
     }
 
+    //Get page info from config files
     public void readConfig(){
         String config = ClientConfig.PAGES.get();
         List<String> configSplit;
@@ -65,14 +66,14 @@ public class TMKPageHandler {
         configSplit = Arrays.asList(config.split("Page"));
 
         configSplit.forEach(page -> {
-            System.out.println("Too Many Keybinds: " + page);
+            System.out.println("Too Many Keybinds: " + page); //Remove when custom page is complete
             List<String> info = new ArrayList<>();
             info.add(StringUtils.substringBetween(page, "name=", ";"));
             info.add(StringUtils.substringBetween(page, "keys=", ";"));
             info.add(StringUtils.substringBetween(page, "page_number=", ";"));
             info.add(StringUtils.substringBetween(page, "hidden=", "}"));
             pageInfo.add(info);
-            System.out.println("Too Many Keybinds: " + pageInfo.get(configSplit.indexOf(page)));
+            System.out.println("Too Many Keybinds: " + pageInfo.get(configSplit.indexOf(page))); //Helps me understand what exactly I need to read, will remove when custom page is complete
         });
 
         pageInfo.remove(0);

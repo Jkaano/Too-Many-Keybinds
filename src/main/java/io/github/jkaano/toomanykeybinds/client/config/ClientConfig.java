@@ -19,7 +19,7 @@ public class ClientConfig {
 
         AUTOMATIC_KEY_PRESS = BUILDER.comment("Automatic Key Press").define("auto_key_press", true);
         LOCK_AUTO = BUILDER.define("lock_value_on_startup", false);
-        PAGES = BUILDER.comment("Pages").define("pages", "");
+        PAGES = BUILDER.comment("Pages - DO NOT TOUCH - INCOMPLETE").define("pages", ""); //Remember to change page comment if you fix this
 
         BUILDER.pop();
         SPEC = BUILDER.build();
