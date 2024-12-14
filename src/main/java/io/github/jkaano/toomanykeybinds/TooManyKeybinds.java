@@ -54,4 +54,8 @@ public class TooManyKeybinds {
         return pageSelect;
     }
 
+    public static RobotCompatibilityChecker getRobotCompatibilityChecker(){
+        return robotCompatibilityChecker;
+    }
+
 }
