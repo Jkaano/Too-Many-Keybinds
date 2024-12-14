@@ -9,7 +9,7 @@ public class EssentialsCompatibility {
     //This class just holds a variable that checks if essentials is installed and uses a less effective
     //key press method. Using robot allows for keyRelease which some keybinds check for, Forge keyDown
     //doesn't trigger these events.
-    public static boolean essentials = true;
+    //public static boolean essentials = true;
 
     public static void setEssentials() {
         essentials = ModList.get().isLoaded("essential");
