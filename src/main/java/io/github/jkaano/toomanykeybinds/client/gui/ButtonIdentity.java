@@ -102,7 +102,7 @@ public class ButtonIdentity{
             @Override
             public void run() {
                 KeyMapping.set(Keybindings.INSTANCE.keySetter.getKey(), false);
-                if(!EssentialsCompatibility.essentials){
+                if(RobotHandler.usingRobot()){
                     RobotHandler.simulateKeyRelease(key);
                 }else{
                     key.setDown(false);
