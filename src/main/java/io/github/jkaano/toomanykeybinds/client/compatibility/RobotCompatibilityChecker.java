@@ -12,7 +12,7 @@ public class RobotCompatibilityChecker{
     private ArrayList<Boolean> isCompatible;
 
     public RobotCompatibilityChecker(){
-        isCompatible = new ArrayList<Boolean>();
+        isCompatible = new ArrayList<>();
     }
 
     public void addCompatible(boolean RobotCompatibility){
