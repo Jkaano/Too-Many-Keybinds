@@ -1,7 +1,8 @@
 package io.github.jkaano.toomanykeybinds.client.handler;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
-import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
+import io.github.jkaano.toomanykeybinds.client.compatibility.RobotCompatibilityChecker;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
