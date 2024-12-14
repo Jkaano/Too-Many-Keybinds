@@ -21,6 +21,11 @@ public class TooManyKeybinds {
 
     public TooManyKeybinds(){
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        //Create compatibility checking object
+        robotCompatibilityChecker = new RobotCompatibilityChecker();
+
+        //Set compatibilities
+        EssentialsCompatibility.setEssentials();
     }
 
     private static int page = 0;
