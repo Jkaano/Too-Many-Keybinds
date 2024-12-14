@@ -16,11 +16,15 @@ public class ClientModHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event){
 
+        //Set compatibilities
+        EssentialsCompatibility.setEssentials();
+
+        //Create an initial configuration support for the KeyHandler to use as it defines some variables
+        RobotHandler.setCompatConfig(); //Maybe move key press handling to a new class so I don't have to initialize and then reset later?
+
         System.out.println("Too Many Keybinds: Creating keybind list");
         TooManyKeybinds.tmkHandler = new KeyHandler();
         System.out.println("Too Many Keybinds: Successfully created keybind list");
-
-        EssentialsCompatibility.setEssentials();
 
     }
 

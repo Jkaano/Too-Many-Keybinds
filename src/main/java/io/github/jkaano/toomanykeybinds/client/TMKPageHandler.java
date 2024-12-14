@@ -1,10 +1,12 @@
 package io.github.jkaano.toomanykeybinds.client;
 
 import com.google.common.collect.Lists;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
 import net.minecraft.client.KeyMapping;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -35,6 +37,11 @@ public class TMKPageHandler {
             pageButtons.add(pbi);
         }); //Initialize buttons
 
+        ClientConfig.PAGES.set(pageSelect.toString());
+        ClientConfig.PAGES.save();
+
+        readConfig();
+
     }
 
     public void updateSearchable(Map<String, List<KeyMapping>> map, List<String> categories, TMKScreen screen){
@@ -51,6 +58,28 @@ public class TMKPageHandler {
         screen.update();
     }
 
+    //Get page info from config files
+    public void readConfig(){
+        String config = ClientConfig.PAGES.get();
+        List<String> configSplit;
+        List<List<String>> pageInfo = new ArrayList<>();
+        configSplit = Arrays.asList(config.split("Page"));
+
+        configSplit.forEach(page -> {
+            System.out.println("Too Many Keybinds: " + page); //Remove when custom page is complete
+            List<String> info = new ArrayList<>();
+            info.add(StringUtils.substringBetween(page, "name=", ";"));
+            info.add(StringUtils.substringBetween(page, "keys=", ";"));
+            info.add(StringUtils.substringBetween(page, "page_number=", ";"));
+            info.add(StringUtils.substringBetween(page, "hidden=", "}"));
+            pageInfo.add(info);
+            System.out.println("Too Many Keybinds: " + pageInfo.get(configSplit.indexOf(page))); //Helps me understand what exactly I need to read, will remove when custom page is complete
+        });
+
+        pageInfo.remove(0);
+        System.out.println(pageInfo);
+    }
+
     //Create and sort pages from Map by adding to List based on order of Categories
     public List<TMKPage> createPages(Map<String, List<KeyMapping>> catKeys, List<String> cat){
         List<TMKPage> t = new ArrayList<>();
@@ -65,7 +94,6 @@ public class TMKPageHandler {
         }
         return t;
     }
-
     //Getters
     public List<TMKPage> getPages(){
         return pages;

@@ -2,6 +2,7 @@ package io.github.jkaano.toomanykeybinds;
 
 import io.github.jkaano.toomanykeybinds.client.KeyHandler;
 import io.github.jkaano.toomanykeybinds.client.TMKPageHandler;
+import io.github.jkaano.toomanykeybinds.client.compatibility.RobotCompatibilityChecker;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.ButtonIdentity;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -15,10 +16,6 @@ import java.util.List;
 public class TooManyKeybinds {
     public static final String MODID = "toomanykeybinds";
 
-    public TooManyKeybinds(){
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
-    }
-
     private static int page = 0;
     private static int pageSelect = 0;
 
@@ -28,6 +25,14 @@ public class TooManyKeybinds {
     public static boolean searching = false;
 
     public static List<ButtonIdentity> keyQueue = new ArrayList<>();
+
+    public static RobotCompatibilityChecker robotCompatibilityChecker;
+
+    public TooManyKeybinds(){
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        //Create compatibility checking object
+        robotCompatibilityChecker = new RobotCompatibilityChecker();
+    }
 
     public static void setPage(int page) {
         TooManyKeybinds.page = page;
@@ -43,6 +48,10 @@ public class TooManyKeybinds {
 
     public static int getPageSelect(){
         return pageSelect;
+    }
+
+    public static RobotCompatibilityChecker getRobotCompatibilityChecker(){
+        return robotCompatibilityChecker;
     }
 
 }

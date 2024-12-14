@@ -3,7 +3,6 @@ package io.github.jkaano.toomanykeybinds.client.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
 import io.github.jkaano.toomanykeybinds.client.Keybindings;
-import io.github.jkaano.toomanykeybinds.client.compatibility.EssentialsCompatibility;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.handler.RobotHandler;
 import net.minecraft.client.KeyMapping;
@@ -82,13 +81,14 @@ public class ButtonIdentity{
     private void changeKey(InputConstants.Key toKey, KeyModifier mod){
         key.setKeyModifierAndCode(mod, toKey);
         KeyMapping.resetMapping();
+        KeyMapping.resetToggleKeys();
     }
 
     private void pressKey(KeyMapping key){
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(!EssentialsCompatibility.essentials){
+                if(RobotHandler.usingRobot()){
                     RobotHandler.simulateKeyPress(key);
                 }else{
                     key.setDown(true);
@@ -101,7 +101,7 @@ public class ButtonIdentity{
             @Override
             public void run() {
                 KeyMapping.set(Keybindings.INSTANCE.keySetter.getKey(), false);
-                if(!EssentialsCompatibility.essentials){
+                if(RobotHandler.usingRobot()){
                     RobotHandler.simulateKeyRelease(key);
                 }else{
                     key.setDown(false);
