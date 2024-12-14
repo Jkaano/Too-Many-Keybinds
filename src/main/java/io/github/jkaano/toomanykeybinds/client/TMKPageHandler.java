@@ -1,6 +1,7 @@
 package io.github.jkaano.toomanykeybinds.client;
 
 import com.google.common.collect.Lists;
+import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import io.github.jkaano.toomanykeybinds.client.gui.PageButtonIdentity;
 import io.github.jkaano.toomanykeybinds.client.gui.TMKPage;
 import io.github.jkaano.toomanykeybinds.client.screen.TMKScreen;
