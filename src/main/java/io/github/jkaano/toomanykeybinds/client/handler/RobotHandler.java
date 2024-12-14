@@ -29,7 +29,7 @@ public class RobotHandler {
                 throw new RuntimeException(e);
             }
         }else{
-            System.out.println("Essentials found, not using robot");
+            System.out.println("Too Many Keybinds: Conflict Found, ignoring robot");
         }
 
     }
