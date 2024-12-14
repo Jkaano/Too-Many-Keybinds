@@ -11,6 +11,8 @@ public class ClientConfig {
     public static ForgeConfigSpec.ConfigValue<Boolean> AUTOMATIC_KEY_PRESS;
     public static ForgeConfigSpec.ConfigValue<Boolean> LOCK_AUTO;
 
+    public static ForgeConfigSpec.ConfigValue<String> PAGES;
+
     static {
 
         BUILDER.push("Too Many Keybinds Configuration");
