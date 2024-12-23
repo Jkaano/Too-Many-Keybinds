@@ -1,7 +1,6 @@
 package io.github.jkaano.toomanykeybinds.client.handler;
 
 import io.github.jkaano.toomanykeybinds.TooManyKeybinds;
-import io.github.jkaano.toomanykeybinds.client.compatibility.RobotCompatibilityChecker;
 import io.github.jkaano.toomanykeybinds.client.config.ClientConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,12 +15,9 @@ public class RobotHandler {
 
     private static Robot robot;
     private static boolean useRobot;
-    private static RobotCompatibilityChecker robotCompatibilityChecker;
 
     @SubscribeEvent
     public static void loadRobot(FMLLoadCompleteEvent event){
-        robotCompatibilityChecker = TooManyKeybinds.getRobotCompatibilityChecker();
-        checkCompatibility();
 
         if(useRobot) {
             try {
@@ -59,10 +55,6 @@ public class RobotHandler {
             ClientConfig.AUTOMATIC_KEY_PRESS.set(true);
             ClientConfig.AUTOMATIC_KEY_PRESS.save();
         }
-    }
-
-    public static void checkCompatibility(){
-        useRobot = robotCompatibilityChecker.checkRobotCompatibility();
     }
 
     public static boolean usingRobot(){
