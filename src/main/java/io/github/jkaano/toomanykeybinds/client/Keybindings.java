@@ -21,13 +21,5 @@ public final class Keybindings {
             GLFW.GLFW_KEY_R,
             CATEGORY_TMK
     );
-    //To avoid conflicts, this button has to be completely unique
-    public final KeyMapping keySetter = new KeyMapping(
-            "key." + TooManyKeybinds.MODID + ".set_key",
-            KeyConflictContext.UNIVERSAL, //Set to in-game so GUI elements with this keybind should still be fine
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_Y,
-            CATEGORY_TMK
-    );
 
 }
