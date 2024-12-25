@@ -9,10 +9,12 @@ import io.github.jkaano.toomanykeybinds.client.handler.ClientModHandler;
 import io.github.jkaano.toomanykeybinds.client.pages.Page;
 import io.github.jkaano.toomanykeybinds.client.pages.PageGroup;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.controls.KeyBindsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -62,6 +64,7 @@ public class MenuScreen extends Screen{
     private ScreenButton nextPartition;
     private ScreenButton previousPartition;
     private ScreenButton config;
+    private ScreenButton keybinds;
 
     //Search
     private EditBox search;
@@ -139,6 +142,11 @@ public class MenuScreen extends Screen{
                 y + menuHeight - (vPadding + buttonHeight-1),
                 buttonHeight, buttonHeight);
         addRenderableWidget(config.addButton(Component.literal("Configuration")));
+        keybinds.setRegion(
+                x+menuWidth - vPadding+1 + (int)(buttonWidth*0.8) - buttonHeight*2,
+                y + menuHeight - (vPadding + buttonHeight-1),
+                buttonHeight, buttonHeight);
+        addRenderableWidget(keybinds.addButton(Component.literal("Keybinds")));
 
     }
 
@@ -302,6 +310,10 @@ public class MenuScreen extends Screen{
             protected void handleButton(Button button){
                 mcIn.setScreen(new ConfigScreen(MenuScreen.this));
             }
+        };
+        keybinds = new ScreenButton("K"){
+            @Override
+            protected void handleButton(Button button){ mcIn.setScreen(new KeyBindsScreen(MenuScreen.this, mcIn.options)); }
         };
     }
 
