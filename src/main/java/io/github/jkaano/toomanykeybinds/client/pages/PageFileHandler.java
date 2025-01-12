@@ -17,6 +17,7 @@ public class PageFileHandler{
     //File paths
     private final String folderPath = "./config/toomanykeybinds";
     public final String defaultPagesPath = folderPath + "/default-pages.json";
+    public final String customPagePath = folderPath + "/custom-pages.json";
 
     public PageFileHandler(){
         createFile();
