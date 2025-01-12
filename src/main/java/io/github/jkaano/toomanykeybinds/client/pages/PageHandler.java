@@ -22,6 +22,7 @@ public class PageHandler{
     private PageGroup defaultPages;
     private PageGroup searchedPages;
     private PageGroup displayPages;
+    private PageGroup customPages;
 
     public PageHandler(){
         mcIn = Minecraft.getInstance();
@@ -29,6 +30,7 @@ public class PageHandler{
 
         updateBinds();
         createDefaultPages();
+        createCustomPages();
         createDisplayPages();
     }
 
@@ -48,11 +50,41 @@ public class PageHandler{
     }
 
     public void createDisplayPages(){
-        List<Page> combinedPages = new ArrayList<>(defaultPages.getPages());
+        List<Page> combinedPages = new ArrayList<>();
+        if(!customPages.getPages().isEmpty()) combinedPages.addAll(customPages.getPages());
+        combinedPages.addAll(defaultPages.getPages());
         combinedPages.removeIf(Page::getHidden);
+        combinedPages.removeIf(page -> page.getKeys().isEmpty());
         int index = 0;
         for(Page page : combinedPages){page.setDisplayIndex(index++);}
         displayPages = new PageGroup(combinedPages);
+    }
+
+    public void createCustomPages(){
+        try{
+            customPages = fileHandler.readPageGroup(fileHandler.customPagePath);
+        }catch(IllegalStateException | IOException e){
+            TooManyKeybinds.LOGGER.error("Couldn't read custom page file: {}", e.toString());
+        }
+        if(customPages == null) customPages = new PageGroup(new ArrayList<>());
+        customPages.setMessage("Add, edit, or remove user made pages");
+        if(!customPages.getPages().isEmpty()){
+            customPages.getPages().sort(Comparator.comparingInt(Page::getIndex));
+            keyBinds = Arrays.asList(mcIn.options.keyMappings);
+            customPages.getPages().forEach(page -> {
+                List<KeyMapping> pageKeys = new ArrayList<>();
+                for(KeyMapping key: keyBinds){
+                    if(page.getKeys().contains(key.getName())){
+                        pageKeys.add(key);
+                    }
+                }
+                if(!page.getKeys().isEmpty()){
+                    page.keyList = pageKeys;
+                    page.setButtons(pageKeys);
+                }
+            });
+        }
+        save(customPages, fileHandler.customPagePath);
     }
 
     public void createDefaultPages(){
@@ -73,10 +105,8 @@ public class PageHandler{
                     }
                 }
             }
-        }catch(IllegalStateException e){
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
+        }catch(IllegalStateException | IOException e){
+            TooManyKeybinds.LOGGER.error("Couldn't create default pages: {}", e.toString());
         }
 
         defaultPages.getPages().sort(Comparator.comparingInt(Page::getIndex));
@@ -86,18 +116,28 @@ public class PageHandler{
 
     public void searchPages(String lookup){
         List<KeyMapping> searchKeys = new ArrayList<>();
-        for(KeyMapping key : keyBinds){
-            if(Component.translatable(key.getName()).getString().toLowerCase().contains(lookup.toLowerCase())){
-                searchKeys.add(key);
-            }
-        }
         List<Page> pages;
-        if(!searchKeys.isEmpty()){
-            pages = partitionPages(searchKeys);
+        if(!lookup.toLowerCase().contains("cat:")){
+            for(KeyMapping key : keyBinds){
+                if(Component.translatable(key.getName()).getString().toLowerCase().contains(lookup.toLowerCase())){
+                    searchKeys.add(key);
+                }
+            }
+            if(!searchKeys.isEmpty()){
+                pages = partitionPages(searchKeys);
+            }else{
+                pages = partitionPages(keyBinds);
+            }
         }else{
-            pages = partitionPages(keyBinds);
+            pages = new ArrayList<>();
+            String catLookup = lookup.replaceAll("cat:", "").toLowerCase().trim();
+            for(Page page : defaultPages.getPages()){
+                if(Component.translatable(page.getName()).getString().toLowerCase().contains(catLookup)){
+                    pages.add(page);
+                }
+            }
+            if(pages.isEmpty()) pages = partitionPages(keyBinds);
         }
-
         int index = 0;
         for(Page page : pages){
             page.setDisplayIndex(index++);
@@ -127,7 +167,7 @@ public class PageHandler{
         try{
             fileHandler.savePageGroup(pageGroup, filePath);
         }catch(IOException e){
-            e.printStackTrace();
+            TooManyKeybinds.LOGGER.error("Couldn't save PageGroup to file: {}", e.toString());
         }
     }
 
@@ -144,5 +184,6 @@ public class PageHandler{
     public PageGroup getDisplayPages(){
         return displayPages;
     }
+    public PageGroup getCustomPages(){return customPages;}
 
 }
