@@ -13,6 +13,7 @@ public class Page{
     @Expose private int index; //Position of page in page group
     @Expose private boolean hidden = false; //Show in menu
     @Expose private List<String> keys; //List of keys set to this page
+    public List<KeyMapping> keyList;
 
     private int displayIndex;
 
@@ -26,11 +27,13 @@ public class Page{
 
     public Page(String name, int index, List<KeyMapping> keys){
         this(name, index);
+        this.keyList = keys;
         setKeys(keys);
     }
 
     //Setters
     public void setKeys(List<KeyMapping> keys){
+        this.keys.clear();
         keys.forEach(key -> {
             this.keys.add(key.getName());
         });
@@ -52,6 +55,7 @@ public class Page{
         this.index = index;
     }
     public void setDisplayIndex(int index){this.displayIndex = index;}
+    public void setName(String name){ this.name = name;}
 
     //Getters
     public String getName(){
