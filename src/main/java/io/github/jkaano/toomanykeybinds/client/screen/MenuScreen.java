@@ -47,10 +47,10 @@ public class MenuScreen extends Screen{
     private final int buttonHeight = 15;
     private final int hGap = ((menuWidth - (buttonWidth*2)) / 3)/2;
 
-    private static int currentPage = 0;
+    public static int currentPage = 0;
     private static int pageCount;
 
-    private static int currentPartition = 0;
+    public static int currentPartition = 0;
     private static int partitionCount;
 
     private String pageTitle;
@@ -74,7 +74,9 @@ public class MenuScreen extends Screen{
     public MenuScreen(){
         super(TITLE);
 
-        pages = ClientModHandler.pageHandler.getDisplayPages();
+        //If people try to remove all pages it'll just use the default pages
+        if(!ClientModHandler.pageHandler.getDisplayPages().getPages().isEmpty()) pages = ClientModHandler.pageHandler.getDisplayPages();
+        else pages = ClientModHandler.pageHandler.getDefaultPages();
         partitionedPages = pages.getPartitionedPages().get(currentPartition);
         pageTitle = Component.translatable(pages.getPages().get(currentPage).getName()).getString();
         widgets = new ArrayList<>();
@@ -133,7 +135,7 @@ public class MenuScreen extends Screen{
 
         search = new EditBox(font, x+1, y-buttonHeight-1, menuWidth-2, buttonHeight, search,
                 Component.literal("Search Keybind"));
-        search.setSuggestion("Search");
+        search.setSuggestion(Component.translatable("gui." + TooManyKeybinds.MODID + ".search").getString());
         addRenderableWidget(search);
 
         //Settings buttons
@@ -141,13 +143,12 @@ public class MenuScreen extends Screen{
                 x + menuWidth - vPadding/2 + (int)(buttonWidth*0.8) - buttonHeight,
                 y + menuHeight - (vPadding + buttonHeight-1),
                 buttonHeight, buttonHeight);
-        addRenderableWidget(config.addButton(Component.literal("Configuration")));
+        addRenderableWidget(config.addButton(Component.translatable("gui." + TooManyKeybinds.MODID + ".configuration")));
         keybinds.setRegion(
                 x+menuWidth - vPadding+1 + (int)(buttonWidth*0.8) - buttonHeight*2,
                 y + menuHeight - (vPadding + buttonHeight-1),
                 buttonHeight, buttonHeight);
-        addRenderableWidget(keybinds.addButton(Component.literal("Keybinds")));
-
+        addRenderableWidget(keybinds.addButton(Component.translatable("gui." + TooManyKeybinds.MODID + ".keybinds")));
     }
 
     @Override
@@ -193,7 +194,7 @@ public class MenuScreen extends Screen{
             searching = !lookup.isEmpty();
             if(!searching){
                 pages = ClientModHandler.pageHandler.getDisplayPages();
-                search.setSuggestion("Search");
+                search.setSuggestion(Component.translatable("gui." + TooManyKeybinds.MODID + ".search").getString());
                 update();
             }else{
                 ClientModHandler.pageHandler.searchPages(lookup);
@@ -268,7 +269,7 @@ public class MenuScreen extends Screen{
     }
 
     private void initManeuverButtons(){
-        nextPage = new ScreenButton("Next"){
+        nextPage = new ScreenButton(Component.translatable("gui." + TooManyKeybinds.MODID + ".next").getString()){
             @Override
             protected void handleButton(Button button){
                 if(currentPage < pageCount){currentPage++;}
@@ -276,7 +277,7 @@ public class MenuScreen extends Screen{
                 update();
             }
         };
-        previousPage = new ScreenButton("Back"){
+        previousPage = new ScreenButton(Component.translatable("gui." + TooManyKeybinds.MODID + ".back").getString()){
             @Override
             protected void handleButton(Button button){
                 if(currentPage > 0){currentPage--;}
@@ -305,13 +306,15 @@ public class MenuScreen extends Screen{
 
     private void initSettingsButtons(){
         Minecraft mcIn = Minecraft.getInstance();
-        config = new ScreenButton("C"){
+        char c = Component.translatable("gui." + TooManyKeybinds.MODID + ".configuration").getString().charAt(0);
+        char k = Component.translatable("gui." + TooManyKeybinds.MODID + ".keybinds").getString().charAt(0);
+        config = new ScreenButton(Character.toString(c)){
             @Override
             protected void handleButton(Button button){
                 mcIn.setScreen(new ConfigScreen(MenuScreen.this));
             }
         };
-        keybinds = new ScreenButton("K"){
+        keybinds = new ScreenButton(Character.toString(k)){
             @Override
             protected void handleButton(Button button){ mcIn.setScreen(new KeyBindsScreen(MenuScreen.this, mcIn.options)); }
         };
