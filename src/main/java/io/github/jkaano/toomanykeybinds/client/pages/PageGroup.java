@@ -24,6 +24,9 @@ public class PageGroup{
     public void updatePartitions(){
         partitionedPages = Lists.partition(pages, PAGE_COUNT);
     }
+    public void updatePartitions(int count){
+        partitionedPages = Lists.partition(pages, count);
+    }
 
     public void add(Page page){
         pages.add(page);
