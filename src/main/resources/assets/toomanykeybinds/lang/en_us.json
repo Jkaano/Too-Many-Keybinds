@@ -1,12 +1,25 @@
 {
   "mod.toomanykeybinds" : "Too Many Keybinds",
   "key.toomanykeybinds.open_tmk": "Open TMK",
-  "key.toomanykeybinds.set_key": "TMK Set: Unique + No Modifiers",
-  "gui.toomanykeybinds.tmk_primary_screen": "TMK Main Menu",
   "key.categories.toomanykeybinds": "Too Many Keybinds",
+  "gui.toomanykeybinds.tmk_primary_screen": "TMK Main Menu",
+  "gui.toomanykeybinds.config": "Too Many Keybinds Config",
+  "gui.toomanykeybinds.unset": "Unset",
+  "gui.toomanykeybinds.delete": "Delete",
+  "gui.toomanykeybinds.done": "Done",
+  "gui.toomanykeybinds.search": "Search (type 'cat:' to find categories)",
+  "gui.toomanykeybinds.configuration": "Configuration",
+  "gui.toomanykeybinds.keybinds": "Keybinds",
+  "gui.toomanykeybinds.next": "Next",
+  "gui.toomanykeybinds.back": "Back",
+  "gui.toomanykeybinds.default_pages": "Default Pages",
+  "gui.toomanykeybinds.custom_pages": "Custom Pages",
+  "gui.toomanykeybinds.add_page": "Add Page",
+  "page.toomanykeybinds.new_page": "New Page",
   "message.toomanykeybinds.opentmk_key_pressed": "Open TMK Key Pressed",
   "message.toomanykeybinds.display_message": "Key bind set, to activate press: %s in %s seconds",
   "message.toomanykeybinds.too_late": "You have taken too long, resetting keybind",
   "options.toomanykeybinds.key_delay": "Time to Press(sec) : %s",
-  "options.toomanykeybinds.auto_press": "Auto Key Press"
+  "options.toomanykeybinds.auto_press": "Auto Key Press",
+  "options.toomanykeybinds.page_index": "Index: %s"
 }
