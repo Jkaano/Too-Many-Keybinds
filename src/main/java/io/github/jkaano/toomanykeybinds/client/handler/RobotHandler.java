@@ -27,11 +27,11 @@ public class RobotHandler {
                 System.out.println("Assigning new robot");
                 robot = new Robot();
             } catch (AWTException e) {
-                e.printStackTrace();
+                TooManyKeybinds.LOGGER.error("Error loading robot - using Minecraft's built in button press instead: {}", e.toString());
                 useRobot = false;
             }
         }else{
-            System.out.println("Too Many Keybinds: Conflict Found, ignoring robot");
+            TooManyKeybinds.LOGGER.info("Not using java.awt.Robot");
         }
 
         //Reset the compatibility config AFTER checking if robot is in use.
